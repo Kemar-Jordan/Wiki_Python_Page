@@ -20,11 +20,11 @@ def client(app):
 def test_home_page(client):
     resp = client.get("/")
     assert resp.status_code == 200
-    assert b"Welcome to the python Wiki!" in resp.data
+    assert b"Welcome to the Python Wiki!" in resp.data
 
 def test_home_page_2(client):
     resp = client.get("/")
     assert resp.status_code == 200
-    assert b"A hub for python projects." in resp.data
+    assert b"A Hub for Python Projects." in resp.data
 
 # TODO(Project 1): Write tests for other routes.
