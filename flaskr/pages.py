@@ -14,4 +14,5 @@ def make_endpoints(app):
     # TODO(Project 1): Implement additional routes according to the project requirements.
     @app.route("/about")
     def about():
-        return render_template('about.html')
+        return 'The about page'
+        #return render_template('about.html')

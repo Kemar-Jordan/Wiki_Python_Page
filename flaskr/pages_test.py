@@ -26,5 +26,4 @@ def test_home_page_2(client):
     resp = client.get("/")
     assert resp.status_code == 200
     assert b"A Hub for Python Projects." in resp.data
-
 # TODO(Project 1): Write tests for other routes.
