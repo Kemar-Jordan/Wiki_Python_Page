@@ -16,3 +16,21 @@ def make_endpoints(app):
     def about():
         return 'The about page'
         #return render_template('about.html')
+
+    # Sign up route
+    @app.route("/signup")
+    def signup():
+        return 'The sign up page'
+        #return render_template('signup.html')
+
+    # Login route
+    @app.route("/login")
+    def login():
+        return 'The login page'
+        #return render_template('login.html')
+
+    # Pages route
+    @app.route("/pages")
+    def pages():
+        return 'The pages page'
+        #return render_template('pages.html')
