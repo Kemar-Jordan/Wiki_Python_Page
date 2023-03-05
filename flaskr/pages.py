@@ -30,5 +30,4 @@ def make_endpoints(app):
     # Pages route
     @app.route("/pages")
     def pages():
-        return 'The pages page'
-        #return render_template('pages.html')
+        return render_template('pages.html')
