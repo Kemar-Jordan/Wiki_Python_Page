@@ -19,7 +19,7 @@ def make_endpoints(app):
 
     # Sign up route
     @app.route("/signup")
-    def signup():
+    def sign_up():
         return 'The sign up page'
         #return render_template('signup.html')
 
