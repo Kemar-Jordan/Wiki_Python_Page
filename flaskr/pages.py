@@ -20,14 +20,12 @@ def make_endpoints(app):
     # Sign up route
     @app.route("/signup")
     def sign_up():
-        return 'The sign up page'
-        #return render_template('signup.html')
+        return render_template('signup.html')
 
     # Login route
     @app.route("/login")
     def login():
-        return 'The login page'
-        #return render_template('login.html')
+        return render_template('login.html')
 
     # Pages route
     @app.route("/pages")
