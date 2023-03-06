@@ -1,19 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About</title>
-</head>
-<body>
-<center>
-    <a href="/">Home</a>  <a href="/pages">Pages</a>  <a href="/about">About</a>  |  <a href="/login">Login</a>  <a href="/signup">Sign Up</a>
-</center>
-<h1>About this Wiki</h1>
-<br>Bla Bla Bla</br>
-<h1>Your Authors</h1>
-<br>Danielle</br>
-<br>Kemar</br>
-<br>Kris</br>
-</body>
-</html>
+{% extends "main.html" %}
+
+{% block page_name %}
+<div>
+    <h1>Founding Authors</h1>
+    <center>
+        <h2>Kemar Jordan</h2>
+        <div><img src="{{ author_1}}" alt="My Image"></div>
+    </center>
+    <center>
+        <h2>Danielle Mccintosh</h2>
+        <div><img src="{{ author_2}}" alt="My Image"></div>
+    </center>
+</div>
+{% endblock %}

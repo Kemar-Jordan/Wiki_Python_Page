@@ -14,7 +14,10 @@ def make_endpoints(app):
     # TODO(Project 1): Implement additional routes according to the project requirements.
     @app.route("/about")
     def about():
-        return render_template('about.html')
+        backend = Backend('wiki-viewer-data')
+        author_1 = 'https://storage.googleapis.com/wiki-viewer-data/kemar.jpg'
+        author_2 = 'https://storage.googleapis.com/wiki-viewer-data/danielle.jpg'
+        return render_template('about.html',author_1 = author_1,author_2 = author_2,get_image=backend.get_image)
 
     # Sign up route
     @app.route("/signup")
