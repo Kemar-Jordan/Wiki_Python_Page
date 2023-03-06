@@ -14,6 +14,19 @@ def make_endpoints(app):
     # TODO(Project 1): Implement additional routes according to the project requirements.
     @app.route("/about")
     def about():
-        backend = Backend('wiki-viewer-data')
-        author_1 = backend.get_image('https://storage.googleapis.com/wiki-viewer-data/scooby.jpg')
-        return render_template("about.html",author_1 = author_1)
+        return render_template('about.html')
+
+    # Sign up route
+    @app.route("/signup")
+    def sign_up():
+        return render_template('signup.html')
+
+    # Login route
+    @app.route("/login")
+    def login():
+        return render_template('login.html')
+
+    # Pages route
+    @app.route("/pages")
+    def pages():
+        return render_template('pages.html')
