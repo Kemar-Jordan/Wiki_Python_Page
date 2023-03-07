@@ -15,9 +15,9 @@ def make_endpoints(app):
     @app.route("/about")
     def about():
         backend = Backend('wiki-viewer-data')
-        author_1 = 'https://storage.googleapis.com/wiki-viewer-data/kemar.jpg'
-        author_2 = 'https://storage.googleapis.com/wiki-viewer-data/danielle.jpg'
-        return render_template('about.html',author_1 = author_1,author_2 = author_2,get_image=backend.get_image)
+        author_1 = backend.get_image('kemar.jpg')
+        author_2 = backend.get_image('danielle.jpg')
+        return render_template('about.html',author_1 = author_1,author_2 = author_2)
 
     # Sign up route
     @app.route("/signup")

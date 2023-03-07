@@ -27,6 +27,6 @@ class Backend:
         """Gets an image from the image bucket."""
         blob = self.bucket.blob(image_name)
         if blob.exists():
-            return blob.download_as_bytes()
+            return blob.public_url
         else:
             return None
