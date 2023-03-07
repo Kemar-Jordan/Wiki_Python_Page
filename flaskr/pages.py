@@ -17,7 +17,8 @@ def make_endpoints(app):
         backend = Backend('wiki-viewer-data')
         author_1 = backend.get_image('kemar.jpg')
         author_2 = backend.get_image('danielle.jpg')
-        return render_template('about.html',author_1 = author_1,author_2 = author_2)
+        author_3 = backend.get_image('kris.JPG')
+        return render_template('about.html',author_1 = author_1, author_2 = author_2, author_3 = author_3)
 
     # Sign up route
     @app.route("/signup")
