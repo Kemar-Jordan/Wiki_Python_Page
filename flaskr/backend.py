@@ -1,4 +1,5 @@
 from google.cloud import storage
+import hashlib
 class Backend:
 
     def __init__(self, bucket_name):
@@ -17,8 +18,17 @@ class Backend:
         blob = self.bucket.blob(file_path)
         blob.upload_from_filename(file_path)
 
-    def sign_up(self):
-        pass
+    def sign_up(self,username,password):
+        # user_bucket = self.storage_client.bucket(self.user_bucket_name)
+        prefix_for_password = 'tech_exchange'
+        prefixed_password = prefix_for_password + password
+        hashed_password = hashlib.sha256(prefixed_password.encode()).hexdigest()
+        blob = self.bucket.blob(username)
+        if blob.exists():
+            return False
+        else:
+            blob.upload_from_string(hashed_password)
+            return True
 
     def sign_in(self):
         pass

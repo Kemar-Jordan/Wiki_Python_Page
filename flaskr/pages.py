@@ -1,5 +1,5 @@
 from flaskr.backend import Backend
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, request, redirect, url_for
 
 
 def make_endpoints(app):
@@ -21,9 +21,19 @@ def make_endpoints(app):
         return render_template('about.html',author_1 = author_1, author_2 = author_2, author_3 = author_3)
 
     # Sign up route
-    @app.route("/signup")
+    @app.route("/signup",methods=['GET','POST'])
     def sign_up():
-        return render_template('signup.html')
+        backend = Backend('wiki-credentials')
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+            if backend.sign_up(username, password):
+                return redirect(url_for('login'))
+            else:
+                return "Username already exists"
+        else:
+            return render_template('signup.html')
+
 
     # Login route
     @app.route("/login")
