@@ -36,11 +36,28 @@ def make_endpoints(app):
 
 
     # Login route
-    @app.route("/login")
+    @app.route("/signin",methods=['GET','POST'])
     def login():
-        return render_template('login.html')
+        backend = Backend('wiki-credentials')
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+            if backend.sign_in(username, password) == True:
+                return render_template('logged_in.html', username = username)
+            else:
+                return "Password is incorrect"
+        else:
+            return render_template('signin.html')
+
 
     # Pages route
     @app.route("/pages")
     def pages():
         return render_template('pages.html')
+
+     # Pages route
+    @app.route("/loggedin")
+    def logged_in():
+        backend = Backend('wiki-credentials')
+        return render_template('logged_in.html')
+

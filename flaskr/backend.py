@@ -30,8 +30,18 @@ class Backend:
             blob.upload_from_string(hashed_password)
             return True
 
-    def sign_in(self):
-        pass
+    def sign_in(self,username,password):
+        prefix_for_password = 'tech_exchange'
+        prefixed_password = prefix_for_password + password
+        hashed_password = hashlib.sha256(prefixed_password.encode()).hexdigest()
+        blob = self.bucket.blob(username)
+        bucket_password = blob.download_as_string().decode('utf-8')
+        if blob.exists():
+            if hashed_password == bucket_password:
+                return True
+        else:
+            return False
+        
 
     def get_image(self, image_name):
         """Gets an image from the image bucket."""
