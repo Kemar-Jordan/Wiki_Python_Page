@@ -1,5 +1,5 @@
 from flaskr.backend import Backend
-from flask import Flask, render_template, send_file, request, redirect, url_for
+from flask import Flask, render_template, send_file, request, redirect, url_for, session
 from werkzeug.utils import secure_filename
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -44,6 +44,7 @@ def make_endpoints(app):
         if request.method == 'POST':
             username = request.form['username']
             password = request.form['password']
+            session['username'] = username
             if backend.sign_in(username, password) == True:
                 return render_template('logged_in.html', username = username)
             else:
@@ -51,26 +52,16 @@ def make_endpoints(app):
         else:
             return render_template('signin.html')
 
-
     # Pages route
     @app.route("/pages")
     def pages():
         return render_template('pages.html')
 
-     # Pages route
-    @app.route("/loggedin")
-    def logged_in():
-        backend = Backend('wiki-credentials')
-        return render_template('logged_in.html')
-
-    def allowed_file(filename):
-        return '.' in filename and \
-            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
     # Upload Route
     @app.route("/upload", methods = ['GET', 'POST'])
-    def upload():
-        return render_template('upload.html')
+    def upload(username):
+        return render_template('upload.html', username = username)
 
     # Logout route
     @app.route("/logout")
