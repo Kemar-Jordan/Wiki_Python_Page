@@ -1,6 +1,8 @@
 from flaskr.backend import Backend
 from flask import Flask, render_template, send_file, request, redirect, url_for
+from werkzeug.utils import secure_filename
 
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 def make_endpoints(app):
     # Flask uses the "app.route" decorator to call methods when users
@@ -61,12 +63,16 @@ def make_endpoints(app):
         backend = Backend('wiki-credentials')
         return render_template('logged_in.html')
 
+    def allowed_file(filename):
+        return '.' in filename and \
+            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
     # Upload Route
-    @app.route("/upload")
+    @app.route("/upload", methods = ['GET', 'POST'])
     def upload():
-        backend 
+        return render_template('upload.html')
 
     # Logout route
-    @app.route("/logout"):
-        pass
+    @app.route("/logout")
+    def logout():
+        return render_template('main.html')
