@@ -1,6 +1,6 @@
 <html>
     <center>
-    <a href="/">Home</a> &emsp;&emsp;  <a href="/pages">Pages</a>  &emsp;&emsp; <a href="/about">About</a>  &emsp;&emsp; <a ""></a>{{username}}</a> &emsp;&emsp;  <a href="/logout">Logout</a> &emsp;&emsp; 
+    <a href="/">Home</a> &emsp;&emsp;  <a href="/pages">Pages</a>  &emsp;&emsp; <a href="/about">About</a>  &emsp;&emsp; <a ""></a>{{username}}</a> &emsp;&emsp; <a href="/upload">Upload</a> &emsp;&emsp;  <a href="/logout">Logout</a> &emsp;&emsp; 
 
 {% block page_name %}
 
@@ -9,6 +9,15 @@
 {% block content %}
 <body>
     <h3>Upload to the Wiki</h3>
+    <form method="POST" action="" enctype="multipart/form-data">
+        <input type="text" name="wikiname" placeholder="wikiname"required/>
+        <input type="file" name="file"required/>
+        <input type="submit" value="Upload"/>
+    </form>
+    <hr>
+    {% for file in files %}
+      <img src="{{ url_for('upload', filename=file) }}" style="width: 64px">
+    {% endfor %}
 </body>
 {% endblock %}
 
