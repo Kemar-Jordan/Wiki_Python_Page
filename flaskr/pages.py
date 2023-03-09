@@ -59,9 +59,18 @@ def make_endpoints(app):
 
 
     # Upload Route
-    @app.route("/upload")
+    @app.route("/upload",methods=['GET','POST'])
     def upload():
+        backend = Backend('wiki-user-uploads')
         username = session['username']
+        if request.method == 'POST':
+            wikiname = request.form['wikiname']
+            wiki = request.files['wiki']
+            filepath = '/tmp/' + wiki.filename 
+            wiki.save(filepath)
+            backend.upload(filepath, wikiname)
+            message = wikiname + ' has been uploaded successfully!'
+            return render_template('upload.html', username = username, message = message)
         return render_template('upload.html', username = username)
 
     # Logout route
