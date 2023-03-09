@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html>
     <center>
-    <a href="/">Home</a> &emsp;&emsp;  <a href="/pages">Pages</a>  &emsp;&emsp; <a href="/about">About</a>  &emsp;&emsp; <a ""></a>{{username}}</a> &emsp;&emsp; <a href="/">Upload</a> &emsp;&emsp;  <a href="/signin">Sign In</a>  &emsp;&emsp; <a href="/signup">Sign Up</a>
+    <a href="/">Home</a> &emsp;&emsp;  <a href="/pages">Pages</a>  &emsp;&emsp; <a href="/about">About</a>  &emsp;&emsp; <a ""></a>{{username}}</a> &emsp;&emsp; <a href="/upload">Upload</a> &emsp;&emsp;  <a href="/logout">Logout</a>  
 
     <div>
-        <h5>Welcome to the Python Wiki</h5>
-        <h5>A hub for python projects</h5>
+        <h1>Welcome to the Python Wiki</h1>
+        <h2>A hub for python projects</h2>
+        <body>
+            Welcome {{username}}!
+        </body>
     </div>
     {% block page_name %}
 {% endblock %}

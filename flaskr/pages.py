@@ -61,3 +61,12 @@ def make_endpoints(app):
         backend = Backend('wiki-credentials')
         return render_template('logged_in.html')
 
+
+    # Upload Route
+    @app.route("/upload")
+    def upload():
+        backend 
+
+    # Logout route
+    @app.route("/logout"):
+        pass
