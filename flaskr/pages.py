@@ -59,8 +59,9 @@ def make_endpoints(app):
 
 
     # Upload Route
-    @app.route("/upload", methods = ['GET', 'POST'])
-    def upload(username):
+    @app.route("/upload")
+    def upload():
+        username = session['username']
         return render_template('upload.html', username = username)
 
     # Logout route
