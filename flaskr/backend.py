@@ -1,20 +1,31 @@
 from google.cloud import storage
 import hashlib
 class Backend:
-
+    '''
+    Provides an interface for the underlying GCS buckets
+    '''
     def __init__(self, bucket_name):
         self.bucket_name = bucket_name
         self.client = storage.Client()
         self.bucket = self.client.bucket(bucket_name)
         
     def get_wiki_page(self, name):
+        '''
+        Gets an uploaded page from the content bucket.
+        '''
         pass
 
     def get_all_page_names(self):
+        '''
+        Gets the names of all pages from the content bucket.
+        '''
         page_names = self.bucket.list_blobs()
         return [f.name for f in page_names]
 
     def upload(self, file_path):
+        '''
+        Adds data to the content bucket.
+        '''
         blob = self.bucket.blob(file_path)
         blob.upload_from_filename(file_path)
 
