@@ -4,10 +4,10 @@
 
 {% block page_name %}
 <h1>Pages contained in this Wiki</h1>
+</center>
 <ul>
     {% for page in pages %}
-        <li> <a href = "https://storage.googleapis.com/wiki-user-uploads/wiki-user-uploads/{{page}}">{{page}}</a> </li>
+        <li> <a href = "https://storage.googleapis.com/wiki-user-uploads/wiki-user-uploads/{{page[18::]}}">{{page[18::]}}</a> </li>
     {% endfor %}
 </ul>
 {% endblock %}
-</center>
