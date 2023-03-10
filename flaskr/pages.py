@@ -55,7 +55,9 @@ def make_endpoints(app):
     # Pages route
     @app.route("/pages")
     def pages():
-        return render_template('pages.html')
+        backend = Backend('wiki-user-uploads')
+        pages = backend.get_all_page_names()
+        return render_template('pages.html', pages = pages)
 
 
     # Upload Route
