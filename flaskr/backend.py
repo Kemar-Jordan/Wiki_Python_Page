@@ -22,6 +22,7 @@ class Backend:
         '''
         Gets the names of all pages from the content bucket.
         '''
+        blob = self.bucket.blob(f"wiki-user-uploads")
         page_names = self.bucket.list_blobs()
         return [f.name for f in page_names]
 
