@@ -33,9 +33,10 @@ class Backend:
         blob = self.bucket.blob(f"wiki-user-uploads/{filename}")
         blob.upload_from_filename(filepath, content_type="text.html")
         
-
     def sign_up(self,username,password):
-        # user_bucket = self.storage_client.bucket(self.user_bucket_name)
+        '''
+        Adds user data if it does not exist along with a hashed password.
+        '''
         prefix_for_password = 'tech_exchange'
         prefixed_password = prefix_for_password + password
         hashed_password = hashlib.sha256(prefixed_password.encode()).hexdigest()
@@ -47,6 +48,9 @@ class Backend:
             return True
 
     def sign_in(self,username,password):
+        '''
+        Checks if a password, when it hashed, matches the password in the user bucket.
+        '''
         prefix_for_password = 'tech_exchange'
         prefixed_password = prefix_for_password + password
         hashed_password = hashlib.sha256(prefixed_password.encode()).hexdigest()
@@ -57,10 +61,11 @@ class Backend:
                 return True
         else:
             return False
-        
 
     def get_image(self, image_name):
-        """Gets an image from the image bucket."""
+        '''
+        Gets an image from the content bucket.
+        '''
         blob = self.bucket.blob(image_name)
         if blob.exists():
             return blob.public_url
