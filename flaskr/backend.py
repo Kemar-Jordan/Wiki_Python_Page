@@ -55,7 +55,7 @@ class Backend:
         prefixed_password = prefix_for_password + password
         hashed_password = hashlib.sha256(prefixed_password.encode()).hexdigest()
         blob = self.bucket.blob(username)
-        bucket_password = blob.download_as_string().decode('utf-8')
+        bucket_password = blob.download_as_bytes().decode('utf-8')
         if blob.exists():
             if hashed_password == bucket_password:
                 return True
