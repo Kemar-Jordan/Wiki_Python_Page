@@ -16,8 +16,7 @@ class Backend:
         '''
         Gets an uploaded page from the content bucket.
         '''
-        blob = self.bucket.blob(f"wiki-user-uploads/{filename}")
-        
+        return "https://storage.googleapis.com/wiki-user-uploads/wiki-user-uploads/" + filename
 
     def get_all_page_names(self):
         '''
@@ -27,7 +26,7 @@ class Backend:
         bucket = storage_client.bucket(bucket_name)
         files = []
         for blob in bucket.list_blobs():
-            files.append(blob.file)
+            files.append(blob.name)
         return files
 
     def upload(self,filepath,filename):
