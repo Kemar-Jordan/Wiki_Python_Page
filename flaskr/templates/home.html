@@ -1,20 +1,12 @@
-<!DOCTYPE html>
-<html>
-    <center>
-
-    <a href="/">Home</a> &emsp;&emsp;  <a href="/pages">Pages</a>  &emsp;&emsp; <a href="/about">About</a> &emsp;&emsp;| &nbsp; &nbsp; <a href="/signin">Login</a>  &emsp;&emsp; <a href="/signup">Sign Up</a>
-
+{% extends "main.html" %}
+{% block page_name %}
     <div>
         <h1>Welcome to the Python Wiki</h1>
         <h2>A hub for python projects</h2>
     </div>
-    {% block page_name %}
+    {%if value and username and welcome%}
+    <h1>Welcome {{username}}</h1>
+    {%else%}
+    <h1>Welcome</h1>
+    {%endif%}
 {% endblock %}
-
-{% block content %}
-
-{% endblock %}
-
-</center>
-
-</html>

@@ -11,8 +11,10 @@ def make_endpoints(app):
     def home():
         # TODO(Checkpoint Requirement 2 of 3): Change this to use render_template
         # to render main.html on the home page
-        username = request.cookies.get('username')
-        return render_template("home.html",username = username)
+        value = request.cookies.get('value')
+        username =  request.cookies.get('username')
+        welcome = request.cookies.get('welcome')
+        return render_template("home.html",value = value,username = username,welcome=welcome)
 
     # TODO(Project 1): Implement additional routes according to the project requirements.
     @app.route("/about")
@@ -21,7 +23,12 @@ def make_endpoints(app):
         author_1 = backend.get_image('kemar_j.jpg')
         author_2 = backend.get_image('danielle.jpg')
         author_3 = backend.get_image('kris.jpg')
-        return render_template('about.html',author_1 = author_1, author_2 = author_2, author_3 = author_3)
+        value = request.cookies.get('value')
+        username =  request.cookies.get('username')
+        welcome = True
+        resp = make_response(render_template("about.html",author_1 = author_1, author_2 = author_2, author_3 = author_3,value = value,username = username,welcome=welcome))
+        resp.set_cookie('welcome','',expires=0)
+        return resp
 
     # Sign up route
     @app.route("/signup",methods=['GET','POST'])
@@ -46,9 +53,13 @@ def make_endpoints(app):
             username = request.form['username']
             password = request.form['password']
             session['username'] = username
-            if backend.sign_in(username, password) == True:
-                resp = make_response(render_template('home.html',username = username))
+            value = backend.sign_in(username, password)
+            if  value:
+                welcome = 'True'
+                resp = make_response(render_template('home.html',value=value,username=username,welcome=welcome))
+                resp.set_cookie('value','True')
                 resp.set_cookie('username',username)
+                resp.set_cookie('welcome','True')
                 return resp
             else:
                 return "Password is incorrect"
@@ -60,7 +71,11 @@ def make_endpoints(app):
     def pages():
         backend = Backend('wiki-user-uploads')
         pages = backend.get_all_page_names()
-        return render_template('pages.html', pages = pages)
+        value = request.cookies.get('value')
+        username = request.cookies.get('username')
+        resp = make_response(render_template('pages.html',value=value,username=username))
+        resp.set_cookie('welcome','',expires=0)
+        return render_template('pages.html', pages = pages,value = value,username = username)
 
 
     # Upload Route
@@ -81,4 +96,8 @@ def make_endpoints(app):
     # Logout route
     @app.route("/logout")
     def logout():
-        return render_template('main.html')
+        resp = make_response(render_template("main.html"))
+        resp.set_cookie('value','',expires=0)
+        resp.set_cookie('username','',expires=0)
+        resp.set_cookie('welcome','',expires=0)
+        return resp
