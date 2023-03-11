@@ -12,19 +12,23 @@ class Backend:
         self.client = storage.Client()
         self.bucket = self.client.bucket(bucket_name)
         
-    def get_wiki_page(self, name):
+    def get_wiki_page(self, filename):
         '''
         Gets an uploaded page from the content bucket.
         '''
-        pass
+        return "https://storage.googleapis.com/wiki-user-uploads/wiki-user-uploads/" + filename
+
 
     def get_all_page_names(self):
         '''
         Gets the names of all pages from the content bucket.
         '''
-        blob = self.bucket.blob(f"wiki-user-uploads")
-        page_names = self.bucket.list_blobs()
-        return [f.name for f in page_names]
+        bucket_name = ("wiki-user-uploads")
+        bucket = storage_client.bucket(bucket_name)
+        files = []
+        for blob in bucket.list_blobs():
+            files.append(blob.name)
+        return files
 
     def upload(self,filepath,filename):
         '''
@@ -55,7 +59,7 @@ class Backend:
         prefixed_password = prefix_for_password + password
         hashed_password = hashlib.sha256(prefixed_password.encode()).hexdigest()
         blob = self.bucket.blob(username)
-        bucket_password = blob.download_as_string().decode('utf-8')
+        bucket_password = blob.download_as_bytes().decode('utf-8')
         if blob.exists():
             if hashed_password == bucket_password:
                 return True
@@ -71,3 +75,13 @@ class Backend:
             return blob.public_url
         else:
             return None
+
+    # # This is used for creating a mock user to sign up, then deleting after testing
+    # def delete_user(self, username):
+    #     blob_username = username
+    #     blob = self.bucket.blob(blob_username)
+    #     if blob.exists():
+    #         blob.delete()
+    #         return True
+    #     else:
+    #         return False
