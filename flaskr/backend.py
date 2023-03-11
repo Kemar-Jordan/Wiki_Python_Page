@@ -17,7 +17,7 @@ class Backend:
         Gets an uploaded page from the content bucket.
         '''
         return "https://storage.googleapis.com/wiki-user-uploads/wiki-user-uploads/" + filename
-
+        
     def get_all_page_names(self):
         '''
         Gets the names of all pages from the content bucket.
