@@ -2,6 +2,7 @@ from flaskr import create_app
 from unittest.mock import patch
 from flaskr.backend import Backend
 import pytest
+import io
 
 # See https://flask.palletsprojects.com/en/2.2.x/testing/ 
 # for more info on testing
@@ -18,17 +19,12 @@ def client(app):
 
 # TODO(Checkpoint (groups of 4 only) Requirement 4): Change test to
 # match the changes made in the other Checkpoint Requirements.
-#Test #1 for home page
+#Test #1 for home page, testing the welcome statement
 def test_home_page(client):
     resp = client.get("/")
     assert resp.status_code == 200
-    assert b"Welcome to the Python Wiki!" in resp.data
-
-#Test #2 for home page
-def test_home_page_2(client):
-    resp = client.get("/")
-    assert resp.status_code == 200
-    assert b"A Hub for Python Projects" in resp.data
+    assert b"Welcome to the Python Wiki" in resp.data
+    assert b"A hub for python projects" in resp.data
 
 #Test #1 for about page, testing author names
 def test_about_page_1(client):
@@ -47,13 +43,21 @@ def test_about_page_2(client):
     assert b'danielle.jpg' in resp.data
     assert b'kris.jpg' in resp.data
 
-#Test #1 for pages page, testing titles
+#Test #1 for pages page, testing title
 def test_pages_page_1(client):
     resp = client.get("/pages")
     assert resp.status_code == 200
     assert b'Pages contained in this Wiki' in resp.data
 
-#TODO, test new implentations for pages
+# Test #2 for pages page, testing if the list of pages are displayed fully and correctly
+def test_pages_page_2(client):
+    resp = client.get("/pages")
+    assert resp.status_code == 200
+    backend = Backend('wiki-user-uploads')
+    pages = backend.get_all_page_names()
+    for i in range(len(pages)):
+        assert bytes(pages[i], 'utf-8') in resp.data
+
 
 #Test #1 for log in (sign in) page, test that the page loads
 def test_signin_page_1(client):
@@ -88,3 +92,10 @@ def test_signup_page_2(client):
     backend = Backend('wiki-credentials')
     assert backend.delete_user('mockuser') == True
 
+# Test #1 for upload page, test a successful upload
+def test_upload_page_1(client):
+    with client.session_transaction() as session:
+        session['username'] = 'testuser'
+    resp = client.post("/upload", data={'wikiname':'test-wiki', 'wiki': (io.BytesIO(b'my file contents'), 'testfile.txt')}, content_type='multipart/form-data')
+    assert resp.status_code == 200
+    assert b'test-wiki has been uploaded successfully!' in resp.data

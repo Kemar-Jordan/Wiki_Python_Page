@@ -17,8 +17,7 @@ class Backend:
         Gets an uploaded page from the content bucket.
         '''
         return "https://storage.googleapis.com/wiki-user-uploads/wiki-user-uploads/" + filename
-
-
+        
     def get_all_page_names(self):
         '''
         Gets the names of all pages from the content bucket.
@@ -76,12 +75,12 @@ class Backend:
         else:
             return None
 
-    # # This is used for creating a mock user to sign up, then deleting after testing
-    # def delete_user(self, username):
-    #     blob_username = username
-    #     blob = self.bucket.blob(blob_username)
-    #     if blob.exists():
-    #         blob.delete()
-    #         return True
-    #     else:
-    #         return False
+    # This is used for creating a mock user to sign up, then deleting after testing
+    def delete_user(self, username):
+        blob_username = username
+        blob = self.bucket.blob(blob_username)
+        if blob.exists():
+            blob.delete()
+            return True
+        else:
+            return False
