@@ -90,12 +90,8 @@ def make_endpoints(app):
             wiki.save(filepath)
             backend.upload(filepath, wikiname)
             message = wikiname + ' has been uploaded successfully!'
-            value = request.cookies.get('value')
-            username = request.cookies.get('username')
-            return render_template('upload.html', username = username, message = message,value = value)
-        value = request.cookies.get('value')
-        username = request.cookies.get('username')
-        return render_template('upload.html',value = value,username=username)
+            return render_template('upload.html', username = username, message = message)
+        return render_template('upload.html', username = username)
 
     # Logout route
     @app.route("/logout")
