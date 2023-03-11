@@ -99,3 +99,18 @@ def test_upload_page_1(client):
     resp = client.post("/upload", data={'wikiname':'test-wiki', 'wiki': (io.BytesIO(b'my file contents'), 'testfile.txt')}, content_type='multipart/form-data')
     assert resp.status_code == 200
     assert b'test-wiki has been uploaded successfully!' in resp.data
+
+# Test #2 for upload page, test that whenever a wikiname is missing, the status code will be 400 - which indicates the server won't process the request due to client error
+def test_upload_page_2(client):
+    with client.session_transaction() as session:
+        session['username'] = 'testuser'
+    resp = client.post("/upload", data={'wiki': (io.BytesIO(b'my file contents'), 'testfile.txt')}, content_type='multipart/form-data')
+    assert resp.status_code == 400
+    
+# Test #1 for log out page, test that the log out route will lead the user back to main.html
+def test_logout_page_1(client):
+    resp = client.get("/logout")
+    assert resp.status_code == 200
+    assert b"Welcome to the Python Wiki" in resp.data
+    assert b"A hub for python projects" in resp.data
+    
