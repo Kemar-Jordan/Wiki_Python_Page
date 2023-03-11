@@ -1,5 +1,5 @@
 from flaskr.backend import Backend
-from flask import Flask, render_template, send_file, request, redirect, url_for, session
+from flask import Flask, render_template, send_file, request, redirect, url_for, session,make_response
 from werkzeug.utils import secure_filename
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -11,7 +11,8 @@ def make_endpoints(app):
     def home():
         # TODO(Checkpoint Requirement 2 of 3): Change this to use render_template
         # to render main.html on the home page
-        return render_template("home.html")
+        username = request.cookies.get('username')
+        return render_template("home.html",username = username)
 
     # TODO(Project 1): Implement additional routes according to the project requirements.
     @app.route("/about")
@@ -46,7 +47,9 @@ def make_endpoints(app):
             password = request.form['password']
             session['username'] = username
             if backend.sign_in(username, password) == True:
-                return render_template('logged_in.html', username = username)
+                resp = make_response(render_template('home.html',username = username))
+                resp.set_cookie('username',username)
+                return resp
             else:
                 return "Password is incorrect"
         else:
