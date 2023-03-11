@@ -1,7 +1,4 @@
-<html>
-    <center>
-    <a href="/">Home</a> &emsp;&emsp;  <a href="/pages">Pages</a>  &emsp;&emsp; <a href="/about">About</a>  &emsp;&emsp; <a ""></a>{{username}}</a> &emsp;&emsp; <a href="/upload">Upload</a> &emsp;&emsp;  <a href="/logout">Logout</a> &emsp;&emsp; 
-
+{% extends "main.html" %}
 {% block page_name %}
 
 {% endblock %}
@@ -15,13 +12,8 @@
         <input type="submit" value="Upload"/>
     </form>
     {{message}}
-    <hr>
     {% for file in files %}
       <img src="{{ url_for('upload', filename=file) }}" style="width: 64px">
     {% endfor %}
 </body>
 {% endblock %}
-
-</center>
-
-</html>
