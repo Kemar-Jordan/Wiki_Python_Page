@@ -12,7 +12,7 @@ def make_endpoints(app):
         # TODO(Checkpoint Requirement 2 of 3): Change this to use render_template
         # to render main.html on the home page
         value = request.cookies.get('value')
-        username =  request.cookies.get('username')
+        username = request.cookies.get('username')
         welcome = request.cookies.get('welcome')
         return render_template("home.html",value = value,username = username,welcome=welcome)
 
@@ -96,7 +96,7 @@ def make_endpoints(app):
     # Logout route
     @app.route("/logout")
     def logout():
-        resp = make_response(render_template("main.html"))
+        resp = make_response(render_template("home.html"))
         resp.set_cookie('value','',expires=0)
         resp.set_cookie('username','',expires=0)
         resp.set_cookie('welcome','',expires=0)

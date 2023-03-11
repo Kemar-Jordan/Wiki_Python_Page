@@ -3,13 +3,15 @@
     <center>
     {%if value%}
     <a href="/">Home</a> &emsp;&emsp;  
-    <a href="/pages">Pages</a>  &emsp;&emsp; 
-    {{username}}&emsp;&emsp;    
-    <a href="/about">About</a> &emsp;&emsp; 
+    <a href="/pages">Pages</a>  &emsp;&emsp;    
+    <a href="/about">About</a> &emsp; | &emsp;  
+    {{username}} &emsp; | &emsp;
+    <a href="/upload">Upload</a> &emsp;&emsp;  
     <a href="/logout">Logout</a> &emsp;&emsp; 
     {%else%}
     <a href="/">Home</a> &emsp;&emsp;   
-    <a href="/about">About</a> &emsp;&emsp;| &nbsp; &nbsp; 
+    <a href="/about">About</a> &emsp;&emsp; 
+    <a href="/pages">Pages</a> &emsp; | &emsp;
     <a href="/signin">Login</a>  &emsp;&emsp; 
     <a href="/signup">Sign Up</a>
     {%endif%}
