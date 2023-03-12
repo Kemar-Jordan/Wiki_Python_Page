@@ -1,31 +1,71 @@
 <!DOCTYPE html>
 <html>
-
+<head>
     <style>
         body {
-            background-color: #EAF9EA
+            padding: 0;
+            background-color: #EAF9EA;
+        }
+        nav {
+            background-color: white;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+        nav span {
+            color: black;
+            text-align: center;
+            padding: 14px 16px;
+            font-size: 18px;
+        }
+        nav a {
+			float: left;
+			color: black;
+			text-align: center;
+			padding: 14px 16px;
+			text-decoration: none;
+			font-size: 18px;
+		}
+
+		nav a:hover {
+			background-color: #EAF9EA;
+			color: black;
+		}
+		nav a.active {
+			background-color: #4CAF50;
+			color: black;
         }
     </style>
+</head>
+<body>
     <center>
 
     {%if value%}
-    <a href="/">Home</a> &emsp;&emsp;  
-    <a href="/pages">Pages</a>  &emsp;&emsp;    
-    <a href="/about">About</a> &emsp; | &emsp;  
-    {{username}} &emsp; | &emsp;
-    <a href="/upload">Upload</a> &emsp;&emsp;  
-    <a href="/logout">Logout</a> &emsp;&emsp; 
+
+    <nav>   
+        <a href="/">Home</a>
+        <a href="/pages">Pages</a>  
+        <a href="/about">About</a>  
+        <span>|&emsp;<b>{{username}}</b>&emsp;|</span>
+        <a href="/upload">Upload</a> 
+        <a href="/logout">Logout</a> 
+    </nav>
+
     {%else%}
-    <a href="/">Home</a> &emsp;&emsp;   
-    <a href="/about">About</a> &emsp;&emsp; 
-    <a href="/pages">Pages</a> &emsp; | &emsp;
-    <a href="/signin">Login</a>  &emsp;&emsp; 
-    <a href="/signup">Sign Up</a>
+    
+    <nav>   
+        <a href="/">Home</a>
+        <a href="/pages">Pages</a>  
+        <a href="/about">About</a>  
+        <a href="/signin">Login</a> 
+        <a href="/signup">Sign Up</a> 
+    </nav>
+
     {%endif%}
 
 <h1>The Python Wiki Server</h1>
 <img src = "https://storage.googleapis.com/wiki-viewer-data/Python_Snake.png" alt = "Python Snake" width="150" height=auto>
-    
+  
 {% block page_name %}
 
 {% endblock %}
@@ -35,42 +75,5 @@
 {% endblock %}
 
 </center>
-
-</html>
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <style>
-        body {
-            background-color: #EAF9EA
-        }
-    </style>
-</head>
-<body>
-
-<center>
-{%if value%}
-<a href="/">Home</a> &emsp;&emsp;  
-<a href="/pages">Pages</a>  &emsp;&emsp;    
-<a href="/about">About</a> &emsp; | &emsp;  
-{{username}} &emsp; | &emsp;
-<a href="/upload">Upload</a> &emsp;&emsp;  
-<a href="/logout">Logout</a> &emsp;&emsp; 
-{%else%}
-<a href="/">Home</a> &emsp;&emsp;   
-<a href="/about">About</a> &emsp;&emsp; 
-<a href="/pages">Pages</a> &emsp; | &emsp;
-<a href="/signin">Login</a>  &emsp;&emsp; 
-<a href="/signup">Sign Up</a>
-{%endif%}
-
-<h1>The Python Wiki</h1>  
-
-</center>
 </body>
-</html> -->
+</html>
