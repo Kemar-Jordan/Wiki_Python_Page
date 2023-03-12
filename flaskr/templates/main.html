@@ -1,17 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+<html>
     <style>
         body {
-            background-color: {{ color }};
+            background-color: #EAF9EA
         }
     </style>
-</head>
-
     <center>
+
     {%if value%}
     <a href="/">Home</a> &emsp;&emsp;  
     <a href="/pages">Pages</a>  &emsp;&emsp;    
@@ -27,8 +22,54 @@
     <a href="/signup">Sign Up</a>
     {%endif%}
 
-<h1>The Python Wiki</h1>  
+<h1>The Python Wiki Server</h1>
+<img src = "https://storage.googleapis.com/wiki-viewer-data/Python_Snake.png" alt = "Python Snake" width="150" height=auto>
+    
+{% block page_name %}
+
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
 
 </center>
 
 </html>
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            background-color: #EAF9EA
+        }
+    </style>
+</head>
+<body>
+
+<center>
+{%if value%}
+<a href="/">Home</a> &emsp;&emsp;  
+<a href="/pages">Pages</a>  &emsp;&emsp;    
+<a href="/about">About</a> &emsp; | &emsp;  
+{{username}} &emsp; | &emsp;
+<a href="/upload">Upload</a> &emsp;&emsp;  
+<a href="/logout">Logout</a> &emsp;&emsp; 
+{%else%}
+<a href="/">Home</a> &emsp;&emsp;   
+<a href="/about">About</a> &emsp;&emsp; 
+<a href="/pages">Pages</a> &emsp; | &emsp;
+<a href="/signin">Login</a>  &emsp;&emsp; 
+<a href="/signup">Sign Up</a>
+{%endif%}
+
+<h1>The Python Wiki</h1>  
+
+</center>
+</body>
+</html> -->

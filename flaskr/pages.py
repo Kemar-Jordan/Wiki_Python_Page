@@ -14,8 +14,15 @@ def make_endpoints(app):
         value = request.cookies.get('value')
         username = request.cookies.get('username')
         welcome = request.cookies.get('welcome')
-        color = '#EAF9EA'
-        return render_template("home.html",value = value,username = username,welcome=welcome, color=color)
+        return render_template("home.html",value = value,username = username,welcome=welcome)
+
+    # def home():
+    #     # TODO(Checkpoint Requirement 2 of 3): Change this to use render_template
+    #     # to render main.html on the home page
+    #     value = request.cookies.get('value')
+    #     username = request.cookies.get('username')
+    #     welcome = request.cookies.get('welcome')
+    #     return render_template("home.html",value = value,username = username,welcome=welcome)
 
     # TODO(Project 1): Implement additional routes according to the project requirements.
     @app.route("/about")
