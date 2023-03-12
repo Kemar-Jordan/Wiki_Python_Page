@@ -35,7 +35,7 @@ class Backend:
         '''
         blob = self.bucket.blob(f"wiki-user-uploads/{filename}")
         blob.upload_from_filename(filepath, content_type="text.html")
-        
+
     def sign_up(self,username,password):
         '''
         Adds user data if it does not exist along with a hashed password.
@@ -58,8 +58,8 @@ class Backend:
         prefixed_password = prefix_for_password + password
         hashed_password = hashlib.sha256(prefixed_password.encode()).hexdigest()
         blob = self.bucket.blob(username)
-        bucket_password = blob.download_as_bytes().decode('utf-8')
         if blob.exists():
+            bucket_password = blob.download_as_bytes().decode('utf-8')
             if hashed_password == bucket_password:
                 return True
         else:
@@ -75,8 +75,20 @@ class Backend:
         else:
             return None
 
-    # This is used for creating a mock user to sign up, then deleting after testing
+    def validate_username(self, username):
+        '''
+        Checks if the username exists in the content bucket
+        '''
+        blob = self.bucket.blob(username)
+        if blob.exists():
+            return True
+        else:
+            return False
+
     def delete_user(self, username):
+        '''
+        Creates and deletes a mock user for testing
+        '''
         blob_username = username
         blob = self.bucket.blob(blob_username)
         if blob.exists():

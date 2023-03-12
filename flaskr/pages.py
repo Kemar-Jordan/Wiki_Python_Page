@@ -49,12 +49,13 @@ def make_endpoints(app):
     @app.route("/signin",methods=['GET','POST'])
     def login():
         backend = Backend('wiki-credentials')
+        message = ''
         if request.method == 'POST':
             username = request.form['username']
             password = request.form['password']
             session['username'] = username
             value = backend.sign_in(username, password)
-            if  value:
+            if value:
                 welcome = 'True'
                 resp = make_response(render_template('home.html',value=value,username=username,welcome=welcome))
                 resp.set_cookie('value','True')
@@ -62,9 +63,10 @@ def make_endpoints(app):
                 resp.set_cookie('welcome','True')
                 return resp
             else:
-                return "Password is incorrect"
+                message = 'Invalid username or password'
+                return render_template('signin.html', message = message)
         else:
-            return render_template('signin.html')
+            return render_template('signin.html', message = message)
 
     # Pages route
     @app.route("/pages")
@@ -92,6 +94,8 @@ def make_endpoints(app):
             message = wikiname + ' has been uploaded successfully!'
             return render_template('upload.html', username = username, message = message)
         return render_template('upload.html', username = username)
+
+
 
     # Logout route
     @app.route("/logout")

@@ -8,9 +8,10 @@
     <h3>Upload to the Wiki</h3>
     <form method="POST" action="" enctype="multipart/form-data">
         <input type="text" name="wikiname" placeholder="wikiname"required/>
-        <input type="file" name="wiki" accept=".doc, .docx, application/msword" required/>
+        <input type="file" name="wiki" accept="file" required/>
         <input type="submit" value="Upload"/>
     </form>
+    <br>
     {{message}}
     {% for file in files %}
       <img src="{{ url_for('upload', filename=file) }}" style="width: 64px">
