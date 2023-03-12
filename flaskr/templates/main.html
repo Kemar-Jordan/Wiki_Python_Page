@@ -1,5 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            background-color: {{ color }};
+        }
+    </style>
+</head>
+
     <center>
     {%if value%}
     <a href="/">Home</a> &emsp;&emsp;  
@@ -17,14 +28,6 @@
     {%endif%}
 
 <h1>The Python Wiki</h1>  
-
-{% block page_name %}
-
-{% endblock %}
-
-{% block content %}
-
-{% endblock %}
 
 </center>
 

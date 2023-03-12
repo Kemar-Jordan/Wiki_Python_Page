@@ -14,7 +14,8 @@ def make_endpoints(app):
         value = request.cookies.get('value')
         username = request.cookies.get('username')
         welcome = request.cookies.get('welcome')
-        return render_template("home.html",value = value,username = username,welcome=welcome)
+        color = '#EAF9EA'
+        return render_template("home.html",value = value,username = username,welcome=welcome, color=color)
 
     # TODO(Project 1): Implement additional routes according to the project requirements.
     @app.route("/about")
