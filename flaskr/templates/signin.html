@@ -2,11 +2,14 @@
 
 {% block page_name %}
 <center>
-    <h1>Login</h1>
-</center>
+<h1>Login</h1>
+
 <form method="POST" sction="/signin">
     <input type="text" name="username" placeholder="username"required/>
     <input type="password" name="password" placeholder="password"required/>
     <input type="submit" value="Login"/>
 </form>
+<br>
+{{message}}
+</center>
 {% endblock %}

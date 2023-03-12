@@ -71,7 +71,7 @@ def make_endpoints(app):
                 resp.set_cookie('welcome','True')
                 return resp
             else:
-                message = 'Invalid username or password'
+                message = 'ERROR: Your login attempt has failed. Make sure the username and password are correct.'
                 return render_template('signin.html', message = message)
         else:
             return render_template('signin.html', message = message)
