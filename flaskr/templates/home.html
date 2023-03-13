@@ -1,12 +1,18 @@
 {% extends "main.html" %}
 {% block page_name %}
-    <div>
-        <h1>Welcome to the Python Wiki</h1>
-        <h2>A hub for python projects</h2>
-    </div>
-    {%if value and username and welcome%}
-    <h1>Welcome {{username}}</h1>
-    {%else%}
-    <h1>Welcome</h1>
-    {%endif%}
+{%if value and username and welcome%}
+<h1>Welcome {{username}}!</h1>
+{%else%}
+
+<h2>(A hub for python projects)</h2>
+{%endif%}
+
 {% endblock %}
+
+</body>
+</html>
+
+
+
+
+
