@@ -23,8 +23,7 @@ def client(app):
 def test_home_page(client):
     resp = client.get("/")
     assert resp.status_code == 200
-    assert b"Welcome to the Python Wiki" in resp.data
-    assert b"A hub for python projects" in resp.data
+    assert b"The Python Wiki Server" in resp.data
 
 #Test #1 for about page, testing author names
 def test_about_page_1(client):
@@ -76,7 +75,7 @@ def test_signin_page_2(client):
 def test_signin_page_3(client):
     resp = client.post("/signin", data={'username':'testuser', 'password':'wrongpassword'})
     assert resp.status_code == 200
-    assert b'Password is incorrect' in resp.data
+    assert b'ERROR: Your login attempt has failed. Make sure the username and password are correct.' in resp.data
 
 #Test #1 for sign up page, test when a user attempts to sign up with an existing username
 def test_signup_page_1(client):
@@ -111,6 +110,4 @@ def test_upload_page_2(client):
 def test_logout_page_1(client):
     resp = client.get("/logout")
     assert resp.status_code == 200
-    assert b"Welcome to the Python Wiki" in resp.data
-    assert b"A hub for python projects" in resp.data
-    
+    assert b"The Python Wiki Server" in resp.data
