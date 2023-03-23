@@ -3,21 +3,23 @@ import hashlib
 
 storage_client = storage.Client()
 
+
 class Backend:
     '''
     Provides an interface for the underlying GCS buckets
     '''
+
     def __init__(self, bucket_name):
         self.bucket_name = bucket_name
         self.client = storage.Client()
         self.bucket = self.client.bucket(bucket_name)
-        
+
     def get_wiki_page(self, filename):
         '''
         Gets an uploaded page from the content bucket.
         '''
         return "https://storage.googleapis.com/wiki-user-uploads/wiki-user-uploads/" + filename
-        
+
     def get_all_page_names(self):
         '''
         Gets the names of all pages from the content bucket.
@@ -29,14 +31,14 @@ class Backend:
             files.append(blob.name)
         return files
 
-    def upload(self,filepath,filename):
+    def upload(self, filepath, filename):
         '''
         Adds data to the content bucket.
         '''
         blob = self.bucket.blob(f"wiki-user-uploads/{filename}")
         blob.upload_from_filename(filepath, content_type="text.html")
 
-    def sign_up(self,username,password):
+    def sign_up(self, username, password):
         '''
         Adds user data if it does not exist along with a hashed password.
         '''
@@ -50,7 +52,7 @@ class Backend:
             blob.upload_from_string(hashed_password)
             return True
 
-    def sign_in(self,username,password):
+    def sign_in(self, username, password):
         '''
         Checks if a password, when it hashed, matches the password in the user bucket.
         '''
