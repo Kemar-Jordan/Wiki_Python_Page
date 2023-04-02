@@ -20,7 +20,7 @@ class Backend:
         '''
         return "https://storage.googleapis.com/wiki-user-uploads/wiki-user-uploads/" + filename
 
-    def get_all_page_names(self):
+    def get_all_page_names(self, author):
         '''
         Gets the names of all pages from the content bucket.
         '''
@@ -28,14 +28,27 @@ class Backend:
         bucket = storage_client.bucket(bucket_name)
         files = []
         for blob in bucket.list_blobs():
-            files.append(blob.name)
+            if author in blob.name:
+                files.append(blob.name)
+        print(files)
+        return files
+    
+    def get_authors(self):
+        '''
+        Gets the name of all the authors from the content bucket.
+        '''
+        bucket_name = ("wiki-user-uploads")
+        bucket = storage_client.bucket(bucket_name)
+        files = set()
+        for blob in bucket.list_blobs():
+            files.add(blob.name.split('/')[-2])
         return files
 
-    def upload(self, filepath, filename):
+    def upload(self, filepath, filename, username):
         '''
         Adds data to the content bucket.
         '''
-        blob = self.bucket.blob(f"wiki-user-uploads/{filename}")
+        blob = self.bucket.blob(f"wiki-user-uploads/{username}/{filename}")
         blob.upload_from_filename(filepath, content_type="text.html")
 
     def sign_up(self, username, password):

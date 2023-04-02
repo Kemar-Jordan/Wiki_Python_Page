@@ -40,11 +40,11 @@
 <body>
     <center>
 
-    {%if value%}
+    {%if username%}
 
     <nav>   
         <a href="/">Home</a>
-        <a href="/pages">Pages</a>  
+        <a href="/pages">Authors</a>  
         <a href="/about">About</a>  
         <span>|&emsp;<b>{{username}}</b>&emsp;|</span>
         <a href="/upload">Upload</a> 
@@ -55,7 +55,7 @@
     
     <nav>   
         <a href="/">Home</a>
-        <a href="/pages">Pages</a>  
+        <a href="/pages">Authors</a>  
         <a href="/about">About</a>  
         <a href="/signin">Login</a> 
         <a href="/signup">Sign Up</a> 
@@ -65,7 +65,7 @@
 
 <h1>The Python Wiki Server</h1>
 <img src = "https://storage.googleapis.com/wiki-viewer-data/Python_Snake.png" alt = "Python Snake" width="150" height=auto>
-  
+
 {% block page_name %}
 
 {% endblock %}
@@ -75,5 +75,6 @@
 {% endblock %}
 
 </center>
+
 </body>
 </html>

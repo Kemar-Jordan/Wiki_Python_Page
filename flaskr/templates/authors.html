@@ -1,0 +1,18 @@
+{% extends "main.html" %}
+
+{% block page_name %}
+<center>
+{%if author%}
+<h1>{{author}}</h1>
+
+{% for page in pages %} 
+<ul> &#x2022; <a href = "https://storage.googleapis.com/wiki-user-uploads/wiki-user-uploads/{{page[18::]}}">{{page.split('/')[-1]}}</a> </ul>
+<br><br>
+{% endfor %}
+
+
+
+{%endif%}
+{{message}}
+</center>
+{% endblock %}

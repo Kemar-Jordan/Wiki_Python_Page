@@ -91,19 +91,40 @@ def make_endpoints(app):
             return render_template('signin.html', message=message)
 
     # Pages route
-    @app.route("/pages")
+    @app.route("/pages", methods=['GET', 'POST'])
     def pages():
+        if request.method == 'POST':
+            username = session['username']
+            author = request.form['author']
+            backend = Backend('wiki-user-uploads')
+            pages = backend.get_all_page_names(author)
+            if pages == []:
+                pages = backend.get_authors()
+                message = 'Error: Author does not exist.'
+                return render_template('pages.html', message = message, pages = pages, username = username)
+            return render_template('authors.html', author=author, pages=pages, username=username)
+        else:
+            backend = Backend('wiki-user-uploads')
+            pages = backend.get_authors()
+            value = request.cookies.get('value')
+            username = request.cookies.get('username')
+            resp = make_response(
+                render_template('pages.html', value=value, username=username))
+            resp.set_cookie('welcome', '', expires=0)
+            return render_template('pages.html',
+                                pages=pages,
+                                value=value,
+                                username=username)
+
+    @app.route("/author_page/<page>", methods=['GET', 'POST'])
+    def show_author_uploads(page):
+        username = session['username']
+        author = page[1:-1]
         backend = Backend('wiki-user-uploads')
-        pages = backend.get_all_page_names()
-        value = request.cookies.get('value')
-        username = request.cookies.get('username')
-        resp = make_response(
-            render_template('pages.html', value=value, username=username))
-        resp.set_cookie('welcome', '', expires=0)
-        return render_template('pages.html',
-                               pages=pages,
-                               value=value,
-                               username=username)
+        pages = backend.get_all_page_names(author)
+        return render_template('authors.html', author=author, pages=pages, username=username)
+        
+
 
     # Upload Route
     @app.route("/upload", methods=['GET', 'POST'])
@@ -115,7 +136,7 @@ def make_endpoints(app):
             wiki = request.files['wiki']
             filepath = '/tmp/' + wiki.filename
             wiki.save(filepath)
-            backend.upload(filepath, wikiname)
+            backend.upload(filepath, wikiname, username)
             message = wikiname + ' has been uploaded successfully!'
             return render_template('upload.html',
                                    username=username,
