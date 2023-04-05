@@ -2,12 +2,20 @@
     
 {% block page_name %}
 <center>
-<h1>Pages contained in this Wiki</h1>
+<h1>Authors</h1>
 </center>     
 
-{% for page in pages %} 
-<ul> &#x2022; <a href = "https://storage.googleapis.com/wiki-user-uploads/wiki-user-uploads/{{page[18::]}}">{{page[18::]}}</a> </ul>
+<form method="POST" sction="/author">
+    <input type="text" name="author" placeholder="author's username"required/>
+    <input type="submit" value="Search"/>
+    <br><br>
+</form>
 
+{{message}}
+<br><br>
+{% for page in pages %} 
+<button onclick="window.location.href = '/author_page/<{{page}}>'">{{page}}</button>
+<br><br>
 {% endfor %}
 
 {% endblock %}

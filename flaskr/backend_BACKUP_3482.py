@@ -1,4 +1,6 @@
 from google.cloud import storage
+
+
 class Backend:
 
     def __init__(self, project_id, bucket_name):
@@ -6,7 +8,7 @@ class Backend:
         self.bucket_name = bucket_name
         self.client = storage.Client(project=project_id)
         self.bucket = self.client.bucket(bucket_name)
-        
+
     def get_wiki_page(self, name):
         pass
 
