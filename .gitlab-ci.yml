@@ -13,15 +13,15 @@ lint:
  - pip install -r requirements.txt
  - pytest .
  only:
- - merge_requests
+ - pushes
 
  prod:
  image: google/cloud-sdk:alpine
  stage: deploy
  environment: Production
  only:
- - main
+ - pushes
  script:
  - echo $SERVICE_ACCOUNT > /tmp/$CI_PIPELINE_ID.json
  - gcloud auth activate-service-account --key-file /tmp/$CI_PIPELINE_ID.json
- - gcloud --quiet --project $PROJECT_ID app deploy
+ - gcloud --quiet --project wikigroup10 app deploy
