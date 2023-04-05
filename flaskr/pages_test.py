@@ -69,7 +69,6 @@ def test_signin_page_2(client):
     resp = client.post("/signin", data={'username':'testuser', 'password':'testpassword'})
     assert resp.status_code == 200
     assert b'testuser' in resp.data
-    #assert b'logged_in.html' in resp.data
 
 #Test #3 for log in (sign in) page, test the POST method in which a user inputs invalid login info
 def test_signin_page_3(client):
