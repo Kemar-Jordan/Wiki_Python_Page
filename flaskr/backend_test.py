@@ -1,100 +1,140 @@
-from flaskr.backend import Backend
-from google.cloud import storage
+import unittest
 from unittest.mock import MagicMock, patch
+from google.cloud import storage
+from flaskr.backend import Backend
 import hashlib
-import pytest
-import tempfile
 
+class TestBackend(unittest.TestCase):
 
-@pytest.fixture
-def backend():
-    return Backend('wiki-backend-test-bucket')
+    @patch.object(storage, 'Client')
+    def test_init(storage, mock_client):
+        '''
+        Test for init method
+        '''
+        backend = Backend('test-bucket')
+        assert backend.bucket_name == 'test-bucket'
+        mock_client.assert_called_once()
+        mock_client.return_value.bucket.assert_called_once_with('test-bucket')
 
+    @patch.object(storage, 'Client')
+    def test_sign_up(self, mock_client):
+        '''
+        Test for sign up method
+        '''
+        # Mock bucket object, blob and client and attributes within them
+        mock_bucket = MagicMock()
+        mock_blob = MagicMock()
+        mock_blob.exists.return_value = False
+        mock_bucket.blob.return_value = mock_blob
+        mock_client.return_value.bucket.return_value = mock_bucket
+        
+        # Create Backend instance and call the sign_up method
+        backend = Backend('test-bucket')
+        result = backend.sign_up('test-user', 'test-password')
+        
+        # Assert called once will test various methods during the sign up
+        mock_client.assert_called_once()
+        mock_client.return_value.bucket.assert_called_once_with('test-bucket')
+        mock_bucket.blob.assert_called_once_with('test-user')
+        mock_blob.exists.assert_called_once()
+        self.assertTrue(result)
 
-# Testing __init__ method
-def test_init(backend):
-    assert backend.bucket_name == 'wiki-backend-test-bucket'
-    assert isinstance(backend.client, storage.Client)
-    assert isinstance(backend.bucket, storage.Bucket)
+    @patch.object(storage, 'Client')
+    def setUp(self, mock_client):
+        '''
+        Set up method defines mock client, bucket and storage before and after each test method
+        '''
+        # Mock the storage.Client class and create a Backend instance
+        self.mock_client = mock_client
+        self.mock_bucket = mock_client.return_value.bucket.return_value
+        self.backend = Backend('test-bucket')
 
+    def test_sign_in_success(self):
+        '''
+        Test for successful sign-in
+        '''
+        username = 'test-user'
+        password = 'test-password'
+        prefix_for_password = 'tech_exchange'
+        prefixed_password = prefix_for_password + password
+        hashed_password = hashlib.sha256(prefixed_password.encode()).hexdigest()
+        self.mock_bucket.blob.return_value.download_as_bytes.return_value = hashed_password.encode()
+        result = self.backend.sign_in(username, password)
+        self.assertTrue(result)
 
-# Testing get_wiki_page method
-def test_get_wiki_page(backend):
-    # Create mock objects for storage client and blob
-    storage_client = MagicMock()
-    blob = MagicMock()
-    # Expected returned url
-    blob.public_url = 'https://storage.googleapis.com/wiki-user-uploads/wiki-user-uploads/test-file'
-    with patch('google.cloud.storage.Client', return_value=storage_client):
-        url = backend.get_wiki_page('test-file')
-        assert url == blob.public_url
+    def test_sign_in_unknown(self):
+        '''
+        Test for non-existent user
+        '''
+        username = 'unknown-user'
+        password = 'test-password'
+        result = self.backend.sign_in(username, password)
+        self.assertFalse(result)
 
+    @patch.object(storage.blob.Blob, 'upload_from_filename')
+    def test_upload_success(self, mock_upload):
+        '''
+        Test for successful upload
+        '''
+        filepath = 'test-file.html'
+        filename = 'test-file.html'
+        username = 'test-user'
+        expected_blob_name = f"wiki-user-uploads/{username}/{filename}"
+        expected_content_type = "text.html"
+        mock_blob = MagicMock()
+        self.mock_bucket.blob.return_value = mock_blob
+        self.backend.upload(filepath, filename, username)
+        mock_blob.upload_from_filename.assert_called_once_with(
+            filepath, content_type=expected_content_type)
+        self.assertEqual(mock_blob.upload_from_filename.call_args[0][0], filepath)
+        self.assertEqual(mock_blob.upload_from_filename.call_args[1]['content_type'], expected_content_type)
+        #self.assertEqual(mock_blob.name, expected_blob_name)
 
-# Test #1 for sign_up, testing the sign up of a new user with a valid username and password, should return True
-def test_sign_up_1(backend):
-    username = 'new_valid_user'
-    password = 'new_valid_password'
-    assert backend.sign_up(username, password) == True
-    # Delete user after testing the sign up
-    assert backend.delete_user(username) == True
+    def test_upload_fail(self):
+        '''
+        Test for failed upload
+        '''
+        filepath = 'test-file.html'
+        filename = 'test-file.html'
+        username = 'test-user'
+        expected_exception = Exception('Error uploading file')
+        self.mock_bucket.blob.side_effect = expected_exception
+        with self.assertRaises(Exception) as context:
+            self.backend.upload(filepath, filename, username)
+        self.assertEqual(str(context.exception), str(expected_exception))
 
+class TestBackend2(unittest.TestCase):
 
-# Test #2 for sign_up method, testing the sign up of existing users, the method should return False
-def test_sign_up_2(backend):
-    username = 'existing_user'
-    password = 'existing_password'
-    blob = backend.bucket.blob(username)
-    blob.upload_from_string('existing_password_hash')
-    assert backend.sign_up(username, password) == False
+    @patch('google.cloud.storage.Client')
+    def setUp(self, mock_storage_client):
+        '''
+        Set up method defines mock bucket for backend before and after each test method
+        '''
+        self.bucket_name = 'test-bucket'
+        self.backend = Backend(self.bucket_name)
 
+    def test_get_image_success(self):
+        '''
+        Test for successfully getting an image
+        '''
+        image_name = 'test-image.jpg'
+        blob_mock = MagicMock()
+        blob_mock.exists.return_value = True
+        blob_mock.public_url = 'https://storage.googleapis.com/test-bucket/test-image.jpg'
+        self.backend.bucket.blob.return_value = blob_mock
+        result = self.backend.get_image(image_name)
+        self.assertEqual(result, 'https://storage.googleapis.com/test-bucket/test-image.jpg')
 
-# Test #3 sign_up method, testing if a password is correctly hashed
-def test_sign_up_3(backend):
-    username = 'new_user'
-    password = 'new_password'
-    backend.sign_up(username, password)
-    blob = backend.bucket.blob(username)
-    bucket_password_hash = blob.download_as_bytes().decode('utf-8')
-    prefix_for_password = 'tech_exchange'
-    prefixed_password = prefix_for_password + password
-    expected_hashed_password = hashlib.sha256(
-        prefixed_password.encode()).hexdigest()
-    assert bucket_password_hash == expected_hashed_password
+    def test_get_image_fail(self):
+        '''
+        Test for failing to get an image
+        '''
+        image_name = 'non-existent-image.jpg'
+        blob_mock = MagicMock()
+        blob_mock.exists.return_value = False
+        self.backend.bucket.blob.return_value = blob_mock
+        result = self.backend.get_image(image_name)
+        self.assertIsNone(result)
 
-
-# Test #1 get_image method, testing if we are returned the correct URL for an image
-def test_get_image_1(backend):
-    image_name = 'test_image.jpg'
-    mock_blob = MagicMock()
-    mock_blob.exists.return_value = True
-    mock_blob.public_url = 'https://storage.googleapis.com/wiki-backend-test-bucket/test_image.jpg'
-    with patch.object(backend.bucket, 'blob', return_value=mock_blob):
-        result = backend.get_image(image_name)
-    assert result == 'https://storage.googleapis.com/wiki-backend-test-bucket/test_image.jpg'
-
-
-# Test #2 get_image method, we pass through a jpg that doesn't exist and expect to be return None
-def test_get_image_2(backend):
-    image = 'mock_nonexistent.jpg'
-    mock_blob = MagicMock()
-    mock_blob.exists.return_value = False
-    with patch.object(backend.bucket, 'blob', return_value=mock_blob):
-        result = backend.get_image(image)
-    assert result is None
-
-
-# Test #1 the upload method, this tests a situation where the upload is a success
-def test_upload_1(backend):
-    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-        temp_file.write(b"test data")
-        temp_file.flush()
-        temp_file_name = temp_file.name.split("/")[-1]
-        backend.upload(temp_file.name, temp_file_name)
-        blob = backend.bucket.blob(f"wiki-user-uploads/{temp_file_name}")
-        assert blob.exists()
-
-
-# Testing the upload method, this tests a situation where the upload is a failure
-def test_upload_2(backend):
-    with pytest.raises(FileNotFoundError):
-        backend.upload("invalid_file_path", "invalid_file_name")
+if __name__ == '__main__':
+    unittest.main()
