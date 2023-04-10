@@ -101,8 +101,14 @@ def make_endpoints(app):
             if pages == []:
                 pages = backend.get_authors()
                 message = 'Error: Author does not exist.'
-                return render_template('pages.html', message = message, pages = pages, username = username)
-            return render_template('authors.html', author=author, pages=pages, username=username)
+                return render_template('pages.html',
+                                       message=message,
+                                       pages=pages,
+                                       username=username)
+            return render_template('authors.html',
+                                   author=author,
+                                   pages=pages,
+                                   username=username)
         else:
             backend = Backend('wiki-user-uploads')
             pages = backend.get_authors()
@@ -112,9 +118,9 @@ def make_endpoints(app):
                 render_template('pages.html', value=value, username=username))
             resp.set_cookie('welcome', '', expires=0)
             return render_template('pages.html',
-                                pages=pages,
-                                value=value,
-                                username=username)
+                                   pages=pages,
+                                   value=value,
+                                   username=username)
 
     @app.route("/author_page/<page>", methods=['GET', 'POST'])
     def show_author_uploads(page):
@@ -122,9 +128,10 @@ def make_endpoints(app):
         author = page[1:-1]
         backend = Backend('wiki-user-uploads')
         pages = backend.get_all_page_names(author)
-        return render_template('authors.html', author=author, pages=pages, username=username)
-        
-
+        return render_template('authors.html',
+                               author=author,
+                               pages=pages,
+                               username=username)
 
     # Upload Route
     @app.route("/upload", methods=['GET', 'POST'])

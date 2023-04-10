@@ -32,7 +32,7 @@ class Backend:
                 files.append(blob.name)
         print(files)
         return files
-    
+
     def get_authors(self):
         '''
         Gets the name of all the authors from the content bucket.

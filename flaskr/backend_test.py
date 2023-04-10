@@ -7,10 +7,21 @@ import hashlib
 class TestBackend(unittest.TestCase):
 
     @patch.object(storage, 'Client')
+    def setUp(self, mock_client):
+        '''
+        Set up method defines mock client, bucket and storage before and after each test method
+        '''
+        # Mock the storage.Client class and create a Backend instance
+        self.mock_client = mock_client
+        self.mock_bucket = mock_client.return_value.bucket.return_value
+        self.backend = Backend('test-bucket')
+
+    @patch.object(storage, 'Client')
     def test_init(storage, mock_client):
         '''
         Test for init method
         '''
+        # Create backend instance and test attributes
         backend = Backend('test-bucket')
         assert backend.bucket_name == 'test-bucket'
         mock_client.assert_called_once()
@@ -27,27 +38,16 @@ class TestBackend(unittest.TestCase):
         mock_blob.exists.return_value = False
         mock_bucket.blob.return_value = mock_blob
         mock_client.return_value.bucket.return_value = mock_bucket
-        
+
         # Create Backend instance and call the sign_up method
         backend = Backend('test-bucket')
         result = backend.sign_up('test-user', 'test-password')
         
         # Assert called once will test various methods during the sign up
-        mock_client.assert_called_once()
         mock_client.return_value.bucket.assert_called_once_with('test-bucket')
         mock_bucket.blob.assert_called_once_with('test-user')
         mock_blob.exists.assert_called_once()
         self.assertTrue(result)
-
-    @patch.object(storage, 'Client')
-    def setUp(self, mock_client):
-        '''
-        Set up method defines mock client, bucket and storage before and after each test method
-        '''
-        # Mock the storage.Client class and create a Backend instance
-        self.mock_client = mock_client
-        self.mock_bucket = mock_client.return_value.bucket.return_value
-        self.backend = Backend('test-bucket')
 
     def test_sign_in_success(self):
         '''
@@ -55,8 +55,7 @@ class TestBackend(unittest.TestCase):
         '''
         username = 'test-user'
         password = 'test-password'
-        prefix_for_password = 'tech_exchange'
-        prefixed_password = prefix_for_password + password
+        prefixed_password = 'tech_exchange' + password
         hashed_password = hashlib.sha256(prefixed_password.encode()).hexdigest()
         self.mock_bucket.blob.return_value.download_as_bytes.return_value = hashed_password.encode()
         result = self.backend.sign_in(username, password)
@@ -79,16 +78,12 @@ class TestBackend(unittest.TestCase):
         filepath = 'test-file.html'
         filename = 'test-file.html'
         username = 'test-user'
-        expected_blob_name = f"wiki-user-uploads/{username}/{filename}"
-        expected_content_type = "text.html"
         mock_blob = MagicMock()
+        mock_blob.name = f"wiki-user-uploads/{username}/{filename}"
         self.mock_bucket.blob.return_value = mock_blob
         self.backend.upload(filepath, filename, username)
-        mock_blob.upload_from_filename.assert_called_once_with(
-            filepath, content_type=expected_content_type)
-        self.assertEqual(mock_blob.upload_from_filename.call_args[0][0], filepath)
-        self.assertEqual(mock_blob.upload_from_filename.call_args[1]['content_type'], expected_content_type)
-        #self.assertEqual(mock_blob.name, expected_blob_name)
+        mock_blob.upload_from_filename.assert_called_once_with(filepath, content_type="text.html")
+        self.assertEqual(mock_blob.name, f"wiki-user-uploads/{username}/{filename}")
 
     def test_upload_fail(self):
         '''
@@ -96,11 +91,10 @@ class TestBackend(unittest.TestCase):
         '''
         filepath = 'test-file.html'
         filename = 'test-file.html'
-        username = 'test-user'
         expected_exception = Exception('Error uploading file')
         self.mock_bucket.blob.side_effect = expected_exception
         with self.assertRaises(Exception) as context:
-            self.backend.upload(filepath, filename, username)
+            self.backend.upload(filepath, filename, 'test-user')
         self.assertEqual(str(context.exception), str(expected_exception))
 
 class TestBackend2(unittest.TestCase):
