@@ -129,9 +129,10 @@ def make_endpoints(app):
         backend = Backend('wiki-user-uploads')
         pages = backend.get_all_page_names(author)
         return render_template('authors.html',
-                               author=author,
-                               pages=pages,
-                               username=username)
+                            author=author,
+                            pages=pages,
+                            username=username)
+        
 
     # Upload Route
     @app.route("/upload", methods=['GET', 'POST'])
