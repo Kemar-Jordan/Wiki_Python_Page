@@ -1,6 +1,7 @@
 from google.cloud import storage
 import hashlib
 
+
 storage_client = storage.Client()
 
 
@@ -111,3 +112,14 @@ class Backend:
             return True
         else:
             return False
+
+    def add_comment(self,comment,firebase):
+        firebase.post(comment)
+
+    def get_comment_ID(self,current_time,comment):
+        comment_id = str(123) +  "_" + comment
+        return comment_id
+
+    def get_userID(self,username,current_time):
+        user_id = str(123) +  "_" + username
+        return user_id

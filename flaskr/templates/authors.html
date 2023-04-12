@@ -4,11 +4,19 @@
 <center>
 {%if author%}
 <h1>{{author}}</h1>
-
+<div class="comment_author_div">
 {% for page in pages %} 
-<ul> &#x2022; <a href = "https://storage.googleapis.com/wiki-user-uploads/wiki-user-uploads/{{page[18::]}}">{{page.split('/')[-1]}}</a> </ul>
+<a href = "https://storage.googleapis.com/wiki-user-uploads/wiki-user-uploads/{{page[18::]}}">{{page.split('/')[-1]}}</a>
+<form method="POST" action="/submit_comment">
+    <input type="text" name="comment" placeholder="comment"required/>
+    <br><br>
+    <input type="submit" value="comment"/>
+    <br><br>
+</form>
+<a href="">View Comments</a>
 <br><br>
 {% endfor %}
+</div>
 
 
 

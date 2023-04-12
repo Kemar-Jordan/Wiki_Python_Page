@@ -1,41 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        body {
-            padding: 0;
-            background-color: #EAF9EA;
-        }
-        nav {
-            background-color: white;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-        }
-        nav span {
-            color: black;
-            text-align: center;
-            padding: 14px 16px;
-            font-size: 18px;
-        }
-        nav a {
-			float: left;
-			color: black;
-			text-align: center;
-			padding: 14px 16px;
-			text-decoration: none;
-			font-size: 18px;
-		}
-
-		nav a:hover {
-			background-color: #EAF9EA;
-			color: black;
-		}
-		nav a.active {
-			background-color: #4CAF50;
-			color: black;
-        }
-    </style>
+    <link rel="stylesheet" href="../static/main.css" />
 </head>
 <body>
     <center>
@@ -49,6 +15,7 @@
         <span>|&emsp;<b>{{username}}</b>&emsp;|</span>
         <a href="/upload">Upload</a> 
         <a href="/logout">Logout</a> 
+        <a href="/metadata">Visualize Metadata</a> 
     </nav>
 
     {%else%}
@@ -58,7 +25,7 @@
         <a href="/pages">Authors</a>  
         <a href="/about">About</a>  
         <a href="/signin">Login</a> 
-        <a href="/signup">Sign Up</a> 
+        <a href="/signup">Sign Up</a>
     </nav>
 
     {%endif%}
@@ -77,4 +44,7 @@
 </center>
 
 </body>
+<div class="bg"></div>
+<div class="bg bg2"></div>
+<div class="bg bg3"></div>
 </html>
