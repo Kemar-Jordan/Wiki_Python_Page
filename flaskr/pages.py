@@ -7,20 +7,23 @@ import pandas as pd
 import json
 import plotly
 import plotly.express as px
+
 firebase_url = "https://wikigroup10-default-rtdb.firebaseio.com/"
 firebase = firebase.FirebaseApplication(firebase_url, None)
 
-# example data 
+# example data
 comment_thread = "wikipageAboutPage"
-data =  { 'comment_message': 'this is a comment',  
-          'user_id': 'alexbode',  
-          'timestamp': 128564732  
-          }  
-result = firebase.post(comment_thread, data)  
-print(result)  
-
+data = {
+    'comment_message': 'this is a comment',
+    'user_id': 'alexbode',
+    'timestamp': 128564732
+}
+result = firebase.post(comment_thread, data)
+print(result)
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
+
 # firebase = firebase_admin.FirebaseApplication('')
 def make_endpoints(app):
     # Flask uses the "app.route" decorator to call methods when users
@@ -176,7 +179,7 @@ def make_endpoints(app):
         resp.set_cookie('username', '', expires=0)
         resp.set_cookie('welcome', '', expires=0)
         return resp
-        
+
     @app.route('/submit_comment', methods=['POST'])
     def submit_comment():
         backend = Backend('wiki-user-uploads')
@@ -184,28 +187,33 @@ def make_endpoints(app):
         now = datetime.now()
         current_time = now.strftime("%Y-%m-%d %H:%M:%S")
         author = session.get('author')
-    # Get the comment data from the request
+        # Get the comment data from the request
         comment = request.form['comment']
-        comment_id = backend.get_comment_ID(current_time,comment)
-        user_id = backend.get_userID(username,current_time)
-        data = {'Username': username,
-                'Comment':comment,
-                'Comment_ID':comment_id,
-                'User_ID':user_id,
-                'Time':current_time}#will pass key-value pairs here
+        comment_id = backend.get_comment_ID(current_time, comment)
+        user_id = backend.get_userID(username, current_time)
+        data = {
+            'Username': username,
+            'Comment': comment,
+            'Comment_ID': comment_id,
+            'User_ID': user_id,
+            'Time': current_time
+        }  #will pass key-value pairs here
         # Create a new comment document in the 'comments' collection
-        firebase.post(author,data)
+        firebase.post(author, data)
 
-    # Redirect to the same page after submission
+        # Redirect to the same page after submission
         return render_template('authors.html')
 
     @app.route('/metadata')
     def visualize_metadata():
         username = session['username']
-        df = pd.DataFrame({'Username':username,'status':['Login','Logout'],'values':[100,65]})
-        fig1 = px.bar(df,x='status',y='values',color='Username')
-        graphJSON = json.dumps(fig1,cls=plotly.utils.PlotlyJSONEncoder)
-        return render_template('chart.html',graphJSON=graphJSON,username=username)
-
-
-    
+        df = pd.DataFrame({
+            'Username': username,
+            'status': ['Login', 'Logout'],
+            'values': [100, 65]
+        })
+        fig1 = px.bar(df, x='status', y='values', color='Username')
+        graphJSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
+        return render_template('chart.html',
+                               graphJSON=graphJSON,
+                               username=username)
