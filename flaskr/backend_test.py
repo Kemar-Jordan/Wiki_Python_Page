@@ -1,3 +1,7 @@
+def test_works():
+    assert True
+
+
 # from flaskr.backend import Backend
 # from google.cloud import storage
 # from unittest.mock import MagicMock, patch
