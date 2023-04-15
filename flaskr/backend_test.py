@@ -1,5 +1,10 @@
-def test_works():
-    assert True
+import unittest
+from unittest.mock import MagicMock, patch
+from google.cloud import storage
+from flaskr.backend import Backend
+import hashlib
+
+class TestBackend(unittest.TestCase
 
 
 # from flaskr.backend import Backend
