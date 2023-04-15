@@ -11,27 +11,19 @@ import plotly.express as px
 firebase_url = "https://wikigroup10-default-rtdb.firebaseio.com/"
 firebase = firebase.FirebaseApplication(firebase_url, None)
 
-# example data
-comment_thread = "wikipageAboutPage"
-data = {
-    'comment_message': 'this is a comment',
-    'user_id': 'alexbode',
-    'timestamp': 128564732
-}
-result = firebase.post(comment_thread, data)
-print(result)
 
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-
-
-# firebase = firebase_admin.FirebaseApplication('')
 def make_endpoints(app):
-    # Flask uses the "app.route" decorator to call methods when users
-    # go to a specific route on the project's website.
+    """ Defines all the routes in the application
+
+    Args:
+
+    app: instance of a flask applciation.
+
+    Returns: Flask route selected.
+    """
+
     @app.route("/")
     def home():
-        # TODO(Checkpoint Requirement 2 of 3): Change this to use render_template
-        # to render main.html on the home page
         value = request.cookies.get('value')
         username = request.cookies.get('username')
         welcome = request.cookies.get('welcome')
@@ -40,15 +32,16 @@ def make_endpoints(app):
                                username=username,
                                welcome=welcome)
 
-    # def home():
-    #     # TODO(Checkpoint Requirement 2 of 3): Change this to use render_template
-    #     # to render main.html on the home page
-    #     value = request.cookies.get('value')
-    #     username = request.cookies.get('username')
-    #     welcome = request.cookies.get('welcome')
-    #     return render_template("home.html",value = value,username = username,welcome=welcome)
+    """ Defines the route URL or home page of the applciation.
 
-    # TODO(Project 1): Implement additional routes according to the project requirements.
+    Args:  None.
+
+    Returns: a render template of the home html page.
+    It retrieves values from cookies: value, username and welcome using "request.cookies.get()
+    and renders "home.html"
+
+    """
+
     @app.route("/about")
     def about():
         backend = Backend('wiki-viewer-data')
@@ -69,6 +62,17 @@ def make_endpoints(app):
         resp.set_cookie('welcome', '', expires=0)
         return resp
 
+    """ Defines the "/about" URL of the application.
+
+    Args:
+
+    None
+
+    Returns: a render template of the about html page. It retrieves 
+    an image for three authors using backend.get_image() and values from
+    cookies and 'value' and 'username'.
+    """
+
     # Sign up route
     @app.route("/signup", methods=['GET', 'POST'])
     def sign_up():
@@ -83,7 +87,18 @@ def make_endpoints(app):
         else:
             return render_template('signup.html')
 
-    # Login route
+    """ Defines the "/signup" URL of the application.
+
+    Args:
+
+    None
+
+    Returns: Checks to see whether user has signed in correctly. If HTTP request method is POST, 
+    it retrieves the username and password from the form data and then calls the backend.sign_up()
+    to sign the user up and then redirects  them to the "login" route, if sign up is successful. Otherwise,
+    renders "signup.html.
+    """
+
     @app.route("/signin", methods=['GET', 'POST'])
     def login():
         backend = Backend('wiki-credentials')
@@ -109,6 +124,16 @@ def make_endpoints(app):
                 return render_template('signin.html', message=message)
         else:
             return render_template('signin.html', message=message)
+
+    """ Defines the "/signin" URL of the application.
+
+    Args:
+
+    None
+
+    Returns: If user logs in correctly, it renders the signin.html.
+    Otherwise, it renders the signup.html.
+    """
 
     # Pages route
     @app.route("/pages", methods=['GET', 'POST'])
@@ -154,7 +179,15 @@ def make_endpoints(app):
                                pages=pages,
                                username=username)
 
-    # Upload Route
+    """ Defines the "/author_page/<page>" URL of the application.
+
+    Args:
+
+    None
+
+    Returns: It renders page which shows the author's name and their uploaded pages..
+    """
+
     @app.route("/upload", methods=['GET', 'POST'])
     def upload():
         backend = Backend('wiki-user-uploads')
@@ -171,7 +204,15 @@ def make_endpoints(app):
                                    message=message)
         return render_template('upload.html', username=username)
 
-    # Logout route
+    """ Defines the "/upload" URL of the application.
+
+    Args:
+
+    None
+
+    Returns: It renders page which enables a user to uplaod a page to the website.
+    """
+
     @app.route("/logout")
     def logout():
         resp = make_response(render_template("home.html"))
@@ -179,6 +220,15 @@ def make_endpoints(app):
         resp.set_cookie('username', '', expires=0)
         resp.set_cookie('welcome', '', expires=0)
         return resp
+
+    """ Defines the "/author_page/<page>" URL of the application.
+
+    Args:
+
+    None
+
+    Returns: It renders home.html when user logs out with cookies updated to expired.
+    """
 
     @app.route('/submit_comment', methods=['POST'])
     def submit_comment():
@@ -197,12 +247,20 @@ def make_endpoints(app):
             'Comment_ID': comment_id,
             'User_ID': user_id,
             'Time': current_time
-        }  #will pass key-value pairs here
-        # Create a new comment document in the 'comments' collection
+        }
         firebase.post(author, data)
 
-        # Redirect to the same page after submission
         return render_template('authors.html')
+
+    """ Defines the "/author_page/<page>" URL of the application.
+
+    Args:
+
+    None
+
+    Returns: It renders page which shows author.html page after user has made a comment.Handles 
+    how the data is tranferred to the database after the website receives it from the form.
+    """
 
     @app.route('/metadata')
     def visualize_metadata():
@@ -217,3 +275,12 @@ def make_endpoints(app):
         return render_template('chart.html',
                                graphJSON=graphJSON,
                                username=username)
+
+    """ Defines the "/author_page/<page>" URL of the application.
+
+    Args:
+
+    None
+
+    Returns: It renders charts.html with metadata represented graphically in charts.
+    """
