@@ -175,9 +175,10 @@ def make_endpoints(app):
         backend = Backend('wiki-user-uploads')
         pages = backend.get_all_page_names(author)
         return render_template('authors.html',
-                               author=author,
-                               pages=pages,
-                               username=username)
+                            author=author,
+                            pages=pages,
+                            username=username)
+        
 
     """ Defines the "/author_page/<page>" URL of the application.
 
@@ -275,12 +276,3 @@ def make_endpoints(app):
         return render_template('chart.html',
                                graphJSON=graphJSON,
                                username=username)
-
-    """ Defines the "/author_page/<page>" URL of the application.
-
-    Args:
-
-    None
-
-    Returns: It renders charts.html with metadata represented graphically in charts.
-    """
