@@ -2,6 +2,9 @@ from flaskr import pages
 
 from flask import Flask
 
+from google.cloud import storage
+from .backend_test import BucketClientMock
+
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -22,11 +25,17 @@ def create_app(test_config=None):
         # Load the instance config, if it exists, when not testing.
         # This file is not committed. Place it in production deployments.
         app.config.from_pyfile('config.py', silent=True)
+        db_client = None
+        bucket_client = storage.Client()
     else:
         # Load the test config if passed in.
         app.config.from_mapping(test_config)
+        db_client = None
+        bucket_client = BucketClientMock()
 
     # TODO(Project 1): Make additional modifications here for logging in, backends
     # and additional endpoints.
-    pages.make_endpoints(app)
+
+    pages.make_endpoints(app, db_client, bucket_client)
+
     return app
