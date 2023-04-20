@@ -1,5 +1,6 @@
 import hashlib
 
+
 class Backend:
     '''
     Provides an interface for the underlying GCS buckets

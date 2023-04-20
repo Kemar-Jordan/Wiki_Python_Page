@@ -32,10 +32,10 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
         db_client = None
         bucket_client = BucketClientMock()
-    
+
     # TODO(Project 1): Make additional modifications here for logging in, backends
     # and additional endpoints.
-    
+
     pages.make_endpoints(app, db_client, bucket_client)
- 
+
     return app

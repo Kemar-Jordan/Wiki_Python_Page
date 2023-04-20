@@ -129,10 +129,9 @@ def make_endpoints(app, db_client, bucket_client):
         backend = Backend('wiki-user-uploads', bucket_client)
         pages = backend.get_all_page_names(author)
         return render_template('authors.html',
-                            author=author,
-                            pages=pages,
-                            username=username)
-        
+                               author=author,
+                               pages=pages,
+                               username=username)
 
     # # Upload Route
     @app.route("/upload", methods=['GET', 'POST'])

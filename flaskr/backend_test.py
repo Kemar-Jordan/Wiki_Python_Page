@@ -14,15 +14,15 @@ class BucketClientMock:
 
     def bucket(self, bucket_name):
         self.bucket_name = bucket_name
-        return self        
+        return self
 
     def blob(self, filename):
         self._blob = filename
         return self
-    
+
     def exists(self):
         return self._blob in BucketClientMock.blobnames
-    
+
     def upload_from_string(self, _):
         pass
 
@@ -30,7 +30,11 @@ class BucketClientMock:
         prefixed_password = 'tech_exchange' + 'test-password'
         return hashlib.sha256(prefixed_password.encode()).hexdigest().encode()
 
-    def upload_from_filename(self, filepath, filename="", username="", content_type="text.html"):
+    def upload_from_filename(self,
+                             filepath,
+                             filename="",
+                             username="",
+                             content_type="text.html"):
         pass
 
     @property
@@ -61,7 +65,7 @@ class TestBackend(unittest.TestCase):
 
         # Create Backend instance and call the sign_up method
         result = self.backend.sign_up('unknown-user', 'test-password')
-        
+
         # Assert called once will test various methods during the sign up
         self.assertTrue(result)
 
@@ -72,7 +76,7 @@ class TestBackend(unittest.TestCase):
 
         # Create Backend instance and call the sign_up method
         result = self.backend.sign_up('test-user', 'test-password')
-        
+
         # Assert called once will test various methods during the sign up
         self.assertFalse(result)
 
@@ -100,7 +104,8 @@ class TestBackend(unittest.TestCase):
         '''
         image_name = 'test-image.jpg'
         result = self.backend.get_image(image_name)
-        self.assertEqual(result, 'https://storage.googleapis.com/test-bucket/test-image.jpg')
+        self.assertEqual(
+            result, 'https://storage.googleapis.com/test-bucket/test-image.jpg')
 
     def test_get_image_fail(self):
         '''
@@ -109,6 +114,7 @@ class TestBackend(unittest.TestCase):
         image_name = 'non-existent-image.jpg'
         result = self.backend.get_image(image_name)
         self.assertIsNone(result)
+
 
 if __name__ == '__main__':
     unittest.main()
