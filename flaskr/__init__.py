@@ -1,9 +1,9 @@
 from flaskr import pages
 
 from flask import Flask
-
+from firebase import firebase
 from google.cloud import storage
-from .backend_test import BucketClientMock
+from .backend_test import BucketClientMock, FirebaseMock
 
 import logging
 
@@ -25,12 +25,13 @@ def create_app(test_config=None):
         # Load the instance config, if it exists, when not testing.
         # This file is not committed. Place it in production deployments.
         app.config.from_pyfile('config.py', silent=True)
-        db_client = None
+        db_client = firebase.FirebaseApplication(
+            "https://wikigroup10-default-rtdb.firebaseio.com/", None)
         bucket_client = storage.Client()
     else:
         # Load the test config if passed in.
         app.config.from_mapping(test_config)
-        db_client = None
+        db_client = FirebaseMock()
         bucket_client = BucketClientMock()
 
     # TODO(Project 1): Make additional modifications here for logging in, backends
