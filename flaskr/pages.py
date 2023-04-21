@@ -12,16 +12,10 @@ firebase_url = "https://wikigroup10-default-rtdb.firebaseio.com/"
 firebase = firebase.FirebaseApplication(firebase_url, None)
 
 
-def make_endpoints(app):
-    """ Defines all the routes in the application
 
-    Args:
-
-    app: instance of a flask applciation.
-
-    Returns: Flask route selected.
-    """
-
+def make_endpoints(app, db_client, bucket_client):
+    # Flask uses the "app.route" decorator to call methods when users
+    # go to a specific route on the project's website.
     @app.route("/")
     def home():
         value = request.cookies.get('value')
@@ -44,7 +38,7 @@ def make_endpoints(app):
 
     @app.route("/about")
     def about():
-        backend = Backend('wiki-viewer-data')
+        backend = Backend('wiki-viewer-data', bucket_client)
         author_1 = backend.get_image('kemar_j.jpg')
         author_2 = backend.get_image('danielle.jpg')
         author_3 = backend.get_image('kris.jpg')
@@ -76,7 +70,7 @@ def make_endpoints(app):
     # Sign up route
     @app.route("/signup", methods=['GET', 'POST'])
     def sign_up():
-        backend = Backend('wiki-credentials')
+        backend = Backend('wiki-credentials', bucket_client)
         if request.method == 'POST':
             username = request.form['username']
             password = request.form['password']
@@ -86,22 +80,10 @@ def make_endpoints(app):
                 return "Username already exists"
         else:
             return render_template('signup.html')
-
-    """ Defines the "/signup" URL of the application.
-
-    Args:
-
-    None
-
-    Returns: Checks to see whether user has signed in correctly. If HTTP request method is POST, 
-    it retrieves the username and password from the form data and then calls the backend.sign_up()
-    to sign the user up and then redirects  them to the "login" route, if sign up is successful. Otherwise,
-    renders "signup.html.
-    """
-
+            
     @app.route("/signin", methods=['GET', 'POST'])
     def login():
-        backend = Backend('wiki-credentials')
+        backend = Backend('wiki-credentials', bucket_client)
         message = ''
         if request.method == 'POST':
             username = request.form['username']
@@ -124,24 +106,13 @@ def make_endpoints(app):
                 return render_template('signin.html', message=message)
         else:
             return render_template('signin.html', message=message)
-
-    """ Defines the "/signin" URL of the application.
-
-    Args:
-
-    None
-
-    Returns: If user logs in correctly, it renders the signin.html.
-    Otherwise, it renders the signup.html.
-    """
-
-    # Pages route
+    # # Pages route
     @app.route("/pages", methods=['GET', 'POST'])
     def pages():
         if request.method == 'POST':
             username = session['username']
             author = request.form['author']
-            backend = Backend('wiki-user-uploads')
+            backend = Backend('wiki-user-uploads', bucket_client)
             pages = backend.get_all_page_names(author)
             if pages == []:
                 pages = backend.get_authors()
@@ -155,7 +126,7 @@ def make_endpoints(app):
                                    pages=pages,
                                    username=username)
         else:
-            backend = Backend('wiki-user-uploads')
+            backend = Backend('wiki-user-uploads', bucket_client)
             pages = backend.get_authors()
             value = request.cookies.get('value')
             username = request.cookies.get('username')
@@ -171,26 +142,17 @@ def make_endpoints(app):
     def show_author_uploads(page):
         username = session['username']
         author = page[1:-1]
-        session['author'] = author
-        backend = Backend('wiki-user-uploads')
+        backend = Backend('wiki-user-uploads', bucket_client)
         pages = backend.get_all_page_names(author)
         return render_template('authors.html',
                                author=author,
                                pages=pages,
                                username=username)
 
-    """ Defines the "/author_page/<page>" URL of the application.
-
-    Args:
-
-    None
-
-    Returns: It renders page which shows the author's name and their uploaded pages..
-    """
-
+    # # Upload Route
     @app.route("/upload", methods=['GET', 'POST'])
     def upload():
-        backend = Backend('wiki-user-uploads')
+        backend = Backend('wiki-user-uploads', bucket_client)
         username = session['username']
         if request.method == 'POST':
             wikiname = request.form['wikiname']
@@ -204,15 +166,7 @@ def make_endpoints(app):
                                    message=message)
         return render_template('upload.html', username=username)
 
-    """ Defines the "/upload" URL of the application.
-
-    Args:
-
-    None
-
-    Returns: It renders page which enables a user to uplaod a page to the website.
-    """
-
+    # # Logout route
     @app.route("/logout")
     def logout():
         resp = make_response(render_template("home.html"))
@@ -232,7 +186,7 @@ def make_endpoints(app):
 
     @app.route('/submit_comment', methods=['POST'])
     def submit_comment():
-        backend = Backend('wiki-user-uploads')
+        backend = Backend('wiki-user-uploads',bucket_client)
         username = session['username']
         now = datetime.now()
         current_time = now.strftime("%Y-%m-%d %H:%M:%S")
@@ -275,12 +229,3 @@ def make_endpoints(app):
         return render_template('chart.html',
                                graphJSON=graphJSON,
                                username=username)
-
-    """ Defines the "/author_page/<page>" URL of the application.
-
-    Args:
-
-    None
-
-    Returns: It renders charts.html with metadata represented graphically in charts.
-    """

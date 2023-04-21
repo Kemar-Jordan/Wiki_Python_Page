@@ -1,7 +1,4 @@
-from google.cloud import storage
 import hashlib
-
-storage_client = storage.Client()
 
 
 class Backend:
@@ -9,10 +6,9 @@ class Backend:
     Provides an interface for the underlying GCS buckets
     '''
 
-    def __init__(self, bucket_name):
+    def __init__(self, bucket_name, bucket_client):
         self.bucket_name = bucket_name
-        self.client = storage.Client()
-        self.bucket = self.client.bucket(bucket_name)
+        self.bucket = bucket_client.bucket(bucket_name)
 
     def get_wiki_page(self, filename):
         '''
@@ -24,10 +20,8 @@ class Backend:
         '''
         Gets the names of all pages from the content bucket.
         '''
-        bucket_name = ("wiki-user-uploads")
-        bucket = storage_client.bucket(bucket_name)
         files = []
-        for blob in bucket.list_blobs():
+        for blob in self.bucket.list_blobs():
             if author in blob.name:
                 files.append(blob.name)
         print(files)
@@ -37,10 +31,8 @@ class Backend:
         '''
         Gets the name of all the authors from the content bucket.
         '''
-        bucket_name = ("wiki-user-uploads")
-        bucket = storage_client.bucket(bucket_name)
         files = set()
-        for blob in bucket.list_blobs():
+        for blob in self.bucket.list_blobs():
             files.add(blob.name.split('/')[-2])
         return files
 
