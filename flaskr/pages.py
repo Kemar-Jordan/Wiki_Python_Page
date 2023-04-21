@@ -2,15 +2,6 @@ from flaskr.backend import Backend
 from flask import Flask, render_template, send_file, request, redirect, url_for, session, make_response
 from werkzeug.utils import secure_filename
 from firebase import firebase
-from datetime import datetime
-import pandas as pd
-import json
-import plotly
-import plotly.express as px
-
-firebase_url = "https://wikigroup10-default-rtdb.firebaseio.com/"
-firebase = firebase.FirebaseApplication(firebase_url, None)
-
 
 
 def make_endpoints(app, db_client, bucket_client):
@@ -80,7 +71,7 @@ def make_endpoints(app, db_client, bucket_client):
                 return "Username already exists"
         else:
             return render_template('signup.html')
-            
+
     @app.route("/signin", methods=['GET', 'POST'])
     def login():
         backend = Backend('wiki-credentials', bucket_client)
@@ -106,6 +97,7 @@ def make_endpoints(app, db_client, bucket_client):
                 return render_template('signin.html', message=message)
         else:
             return render_template('signin.html', message=message)
+
     # # Pages route
     @app.route("/pages", methods=['GET', 'POST'])
     def pages():
@@ -173,58 +165,32 @@ def make_endpoints(app, db_client, bucket_client):
         resp.set_cookie('value', '', expires=0)
         resp.set_cookie('username', '', expires=0)
         resp.set_cookie('welcome', '', expires=0)
+        session.pop('username', None)
         return resp
 
-    """ Defines the "/author_page/<page>" URL of the application.
+    @app.before_request
+    def track_user_metadata():
+        page = request.path
+        # In the case of home (/) path, set page to /home
+        if page == '/':
+            page = '/home'
+        elif page == '/pages':
+            page = '/authors'
+        elif page == '/signin':
+            page = '/login'
 
-    Args:
+        if session.get('username'):
+            username = session['username']
 
-    None
+            # Access the user's metadata within firebase
+            parent_key = '/' + username
+            page_count = 0
+            page_count = db_client.get(parent_key, page)
 
-    Returns: It renders home.html when user logs out with cookies updated to expired.
-    """
+            # If the page doesn't exist then initialize it
+            if page_count is None:
+                page_count = 0
+                db_client.put(parent_key, page, page_count)
 
-    @app.route('/submit_comment', methods=['POST'])
-    def submit_comment():
-        backend = Backend('wiki-user-uploads',bucket_client)
-        username = session['username']
-        now = datetime.now()
-        current_time = now.strftime("%Y-%m-%d %H:%M:%S")
-        # Get the comment data from the request
-        comment = request.form['comment']
-        comment_id = backend.get_comment_ID(current_time, comment)
-        user_id = backend.get_userID(username, current_time)
-        data = {
-            'Username': username,
-            'Comment': comment,
-            'Comment_ID': comment_id,
-            'User_ID': user_id,
-            'Time': current_time
-        }
-        firebase.post(username, data)
-
-        return render_template('authors.html')
-
-    """ Defines the "/author_page/<page>" URL of the application.
-
-    Args:
-
-    None
-
-    Returns: It renders page which shows author.html page after user has made a comment.Handles 
-    how the data is tranferred to the database after the website receives it from the form.
-    """
-
-    @app.route('/metadata')
-    def visualize_metadata():
-        username = session['username']
-        df = pd.DataFrame({
-            'Username': username,
-            'status': ['Login', 'Logout'],
-            'values': [100, 65]
-        })
-        fig1 = px.bar(df, x='status', y='values', color='Username')
-        graphJSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
-        return render_template('chart.html',
-                               graphJSON=graphJSON,
-                               username=username)
+            # Increment the page count
+            db_client.put(parent_key, page, page_count + 1)
