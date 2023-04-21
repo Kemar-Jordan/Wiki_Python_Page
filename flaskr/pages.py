@@ -190,7 +190,6 @@ def make_endpoints(app, db_client, bucket_client):
         username = session['username']
         now = datetime.now()
         current_time = now.strftime("%Y-%m-%d %H:%M:%S")
-        author = session.get('author')
         # Get the comment data from the request
         comment = request.form['comment']
         comment_id = backend.get_comment_ID(current_time, comment)
@@ -202,7 +201,7 @@ def make_endpoints(app, db_client, bucket_client):
             'User_ID': user_id,
             'Time': current_time
         }
-        firebase.post(author, data)
+        firebase.post(username, data)
 
         return render_template('authors.html')
 
