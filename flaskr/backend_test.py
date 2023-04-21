@@ -5,6 +5,15 @@ from flaskr.backend import Backend
 import hashlib
 
 
+class FirebaseMock:
+
+    def get(self, *args, **vr):
+        return None
+
+    def put(self, *args, **vr):
+        return None
+
+
 class BucketClientMock:
 
     blobnames = [
