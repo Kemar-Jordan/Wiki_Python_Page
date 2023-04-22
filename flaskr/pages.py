@@ -248,11 +248,7 @@ def make_endpoints(app, db_client, bucket_client):
         # Access user metadata
         parent_key = '/' + username + '_metadata'
         visits = db_client.get(parent_key, "")
-        metadata = {
-            'Username': username,
-            'Pages': [],
-            'Visits': []
-        }
+        metadata = {'Username': username, 'Pages': [], 'Visits': []}
         for key in visits:
             metadata['Pages'].append(key)
             metadata['Visits'].append(visits[key])
