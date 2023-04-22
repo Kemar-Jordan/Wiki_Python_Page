@@ -8,6 +8,7 @@ import json
 import plotly
 import plotly.express as px
 
+
 def make_endpoints(app, db_client, bucket_client):
     # Flask uses the "app.route" decorator to call methods when users
     # go to a specific route on the project's website.
@@ -246,19 +247,16 @@ def make_endpoints(app, db_client, bucket_client):
         username = session['username']
         # Access user metadata
         parent_key = '/' + username + '_metadata'
-        metadata = db_client.get(parent_key, "")
-        page_names = []
-        page_counts = []
-        for key in metadata:
-            page_names.append(key)
-        for value in metadata.values():
-            page_counts.append(value)
-            
-        df = pd.DataFrame({
+        visits = db_client.get(parent_key, "")
+        metadata = {
             'Username': username,
-            'Pages': page_names,
-            'Visits': page_counts
-        })
+            'Pages': [],
+            'Visits': []
+        }
+        for key in visits:
+            metadata['Pages'].append(key)
+            metadata['Visits'].append(visits[key])
+        df = pd.DataFrame(metadata)
         fig1 = px.bar(df, x='Pages', y='Visits', color='Username')
         graphJSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
         return render_template('chart.html',
