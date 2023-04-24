@@ -3,10 +3,10 @@ from flask import Flask, render_template, send_file, request, redirect, url_for,
 from werkzeug.utils import secure_filename
 from firebase import firebase
 from datetime import datetime
-# import pandas as pd
+import pandas as pd
 import json
-# import plotly
-# import plotly.express as px
+import plotly
+import plotly.express as px
 
 
 def make_endpoints(app, db_client, bucket_client):
