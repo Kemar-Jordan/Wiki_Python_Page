@@ -11,6 +11,7 @@ import plotly.express as px
 firebase_url = "https://wikigroup10-default-rtdb.firebaseio.com/"
 firebase = firebase.FirebaseApplication(firebase_url, None)
 
+
 def make_endpoints(app, db_client, bucket_client):
     # Flask uses the "app.route" decorator to call methods when users
     # go to a specific route on the project's website.
@@ -214,7 +215,7 @@ def make_endpoints(app, db_client, bucket_client):
 
     @app.route('/submit_comment', methods=['POST'])
     def submit_comment():
-        backend = Backend('wiki-user-uploads',bucket_client)
+        backend = Backend('wiki-user-uploads', bucket_client)
         username = session['username']
         now = datetime.now()
         current_time = now.strftime("%Y-%m-%d %H:%M:%S")
@@ -244,7 +245,6 @@ def make_endpoints(app, db_client, bucket_client):
     how the data is tranferred to the database after the website receives it from the form.
     """
 
-    
     @app.route('/metadata')
     def visualize_metadata():
         username = session['username']
