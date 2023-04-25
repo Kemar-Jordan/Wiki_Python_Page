@@ -2,6 +2,11 @@ from flaskr.backend import Backend
 from flask import Flask, render_template, send_file, request, redirect, url_for, session, make_response
 from werkzeug.utils import secure_filename
 from firebase import firebase
+from datetime import datetime
+import pandas as pd
+import json
+import plotly
+import plotly.express as px
 
 
 def make_endpoints(app, db_client, bucket_client):
@@ -93,6 +98,7 @@ def make_endpoints(app, db_client, bucket_client):
                 resp.set_cookie('welcome', 'True')
                 return resp
             else:
+                session['username'] = None
                 message = 'ERROR: Your login attempt has failed. Make sure the username and password are correct.'
                 return render_template('signin.html', message=message)
         else:
@@ -183,7 +189,7 @@ def make_endpoints(app, db_client, bucket_client):
             username = session['username']
 
             # Access the user's metadata within firebase
-            parent_key = '/' + username
+            parent_key = '/' + username + '_metadata'
             page_count = 0
             page_count = db_client.get(parent_key, page)
 
@@ -194,3 +200,70 @@ def make_endpoints(app, db_client, bucket_client):
 
             # Increment the page count
             db_client.put(parent_key, page, page_count + 1)
+
+    """ Defines the "/author_page/<page>" URL of the application.
+
+    Args:
+
+    None
+
+    Returns: It renders home.html when user logs out with cookies updated to expired.
+    """
+
+    @app.route('/submit_comment', methods=['POST'])
+    def submit_comment():
+        backend = Backend('wiki-user-uploads')
+        username = session['username']
+        now = datetime.now()
+        current_time = now.strftime("%Y-%m-%d %H:%M:%S")
+        author = session.get('author')
+        # Get the comment data from the request
+        comment = request.form['comment']
+        comment_id = backend.get_comment_ID(current_time, comment)
+        user_id = backend.get_userID(username, current_time)
+        data = {
+            'Username': username,
+            'Comment': comment,
+            'Comment_ID': comment_id,
+            'User_ID': user_id,
+            'Time': current_time
+        }
+        firebase.post(author, data)
+
+        return render_template('authors.html')
+
+    """ Defines the "/author_page/<page>" URL of the application.
+
+    Args:
+
+    None
+
+    Returns: It renders page which shows author.html page after user has made a comment.Handles 
+    how the data is tranferred to the database after the website receives it from the form.
+    """
+
+    @app.route('/metadata')
+    def visualize_metadata():
+        username = session['username']
+        # Access user metadata
+        parent_key = '/' + username + '_metadata'
+        visits = db_client.get(parent_key, "")
+        metadata = {'Username': username, 'Pages': [], 'Visits': []}
+        for key in visits:
+            metadata['Pages'].append(key)
+            metadata['Visits'].append(visits[key])
+        df = pd.DataFrame(metadata)
+        fig1 = px.bar(df, x='Pages', y='Visits', color='Username')
+        graphJSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
+        return render_template('chart.html',
+                               graphJSON=graphJSON,
+                               username=username)
+
+    """ Defines the "/author_page/<page>" URL of the application.
+
+    Args:
+
+    None
+
+    Returns: It renders charts.html with metadata represented graphically in charts.
+    """
