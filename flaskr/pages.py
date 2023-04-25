@@ -177,41 +177,41 @@ def make_endpoints(app, db_client, bucket_client):
         session.pop('username', None)
         return resp
 
-    @app.before_request
-    def track_user_metadata():
-        page = request.path
-        # In the case of home (/) path, set page to /home
-        if page == '/':
-            page = '/home'
-        elif page == '/pages':
-            page = '/authors'
-        elif page == '/signin':
-            page = '/login'
+    # @app.before_request
+    # def track_user_metadata():
+    #     page = request.path
+    #     # In the case of home (/) path, set page to /home
+    #     if page == '/':
+    #         page = '/home'
+    #     elif page == '/pages':
+    #         page = '/authors'
+    #     elif page == '/signin':
+    #         page = '/login'
 
-        if session.get('username'):
-            username = session['username']
+    #     if session.get('username'):
+    #         username = session['username']
 
-            # Access the user's metadata within firebase
-            parent_key = '/' + username + '_metadata'
-            page_count = 0
-            page_count = db_client.get(parent_key, page)
+    #         # Access the user's metadata within firebase
+    #         parent_key = '/' + username + '_metadata'
+    #         page_count = 0
+    #         page_count = db_client.get(parent_key, page)
 
-            # If the page doesn't exist then initialize it
-            if page_count is None:
-                page_count = 0
-                db_client.put(parent_key, page, page_count)
+    #         # If the page doesn't exist then initialize it
+    #         if page_count is None:
+    #             page_count = 0
+    #             db_client.put(parent_key, page, page_count)
 
-            # Increment the page count
-            db_client.put(parent_key, page, page_count + 1)
+    #         # Increment the page count
+    #         db_client.put(parent_key, page, page_count + 1)
 
-    """ Defines the "/author_page/<page>" URL of the application.
+    # """ Defines the "/author_page/<page>" URL of the application.
 
-    Args:
+    # Args:
 
-    None
+    # None
 
-    Returns: It renders home.html when user logs out with cookies updated to expired.
-    """
+    # Returns: It renders home.html when user logs out with cookies updated to expired.
+    # """
 
     @app.route('/submit_comment', methods=['POST'])
     def submit_comment():
@@ -232,6 +232,8 @@ def make_endpoints(app, db_client, bucket_client):
             'Time': current_time
         }
         firebase.post(author, data)
+        result = firebase.get(firebase_url, author)
+        print(result)
 
         return render_template('authors.html')
 
@@ -244,6 +246,18 @@ def make_endpoints(app, db_client, bucket_client):
     Returns: It renders page which shows author.html page after user has made a comment.Handles 
     how the data is tranferred to the database after the website receives it from the form.
     """
+
+    @app.route('/view_comment', methods=['GET', 'POST'])
+    def view_comment():
+        backend = Backend('wiki-user-uploads', bucket_client)
+        username = session['username']
+        author = session.get('author')
+        result = firebase.get(firebase_url, author)
+        print(result)
+
+        return render_template('view_comments.html',
+                               result=result,
+                               username=username)
 
     @app.route('/metadata')
     def visualize_metadata():
