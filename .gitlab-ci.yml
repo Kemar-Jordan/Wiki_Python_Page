@@ -28,4 +28,4 @@ prod:
  - gcloud app browse --project $PROJECT_ID
 
 tags:
-  - SDS:wikigroup10
+  - SDS
