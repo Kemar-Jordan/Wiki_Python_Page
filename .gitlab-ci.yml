@@ -26,3 +26,6 @@ prod:
  - gcloud auth activate-service-account --key-file /tmp/$CI_PIPELINE_ID.json
  - gcloud --quiet --project wikigroup10 app deploy
  - gcloud app browse --project $PROJECT_ID
+
+tags:
+  - SDS:wikigroup10
