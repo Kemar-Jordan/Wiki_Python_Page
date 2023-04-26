@@ -6,6 +6,8 @@ lint:
   - yapf --style google --recursive --diff .
  only:
   - merge_requests
+ tags:
+  - SDS
 
 unittest:
  stage: test
@@ -14,6 +16,8 @@ unittest:
   - pytest .
  only:
   - merge_requests
+ tags:
+  - SDS
 
 prod:
  image: google/cloud-sdk:alpine
@@ -26,6 +30,5 @@ prod:
  - gcloud auth activate-service-account --key-file /tmp/$CI_PIPELINE_ID.json
  - gcloud --quiet --project wikigroup10 app deploy
  - gcloud app browse --project $PROJECT_ID
-
-tags:
+ tags:
   - SDS
