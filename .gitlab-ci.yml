@@ -1,4 +1,5 @@
 image: python:3
+
 lint:
  stage: test
  script:
@@ -6,8 +7,6 @@ lint:
   - yapf --style google --recursive --diff .
  only:
   - merge_requests
- tags:
-  - SDS
 
 unittest:
  stage: test
@@ -16,19 +15,14 @@ unittest:
   - pytest .
  only:
   - merge_requests
- tags:
-  - SDS
 
 prod:
  image: google/cloud-sdk:alpine
  stage: deploy
  environment: Production
  only:
- - merge_requests
+ - main
  script:
  - echo $SERVICE_ACCOUNT > /tmp/$CI_PIPELINE_ID.json
  - gcloud auth activate-service-account --key-file /tmp/$CI_PIPELINE_ID.json
- - gcloud --quiet --project wikigroup10 app deploy
- - gcloud app browse --project $PROJECT_ID
- tags:
-  - SDS
+ - gcloud --quiet --project $PROJECT_ID app deploy
